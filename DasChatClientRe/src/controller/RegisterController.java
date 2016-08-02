@@ -10,7 +10,7 @@ import util.PasswordValidator;
 
 public class RegisterController
 {
-
+	private String kys = "";
 	private Stage					registerStage;
 
 	// FXML Variables
@@ -68,7 +68,7 @@ public class RegisterController
 						registerPasswordAgain.getStyleClass().remove("textFieldError");
 						registerAccountname.getStyleClass().remove("textFieldError");
 						DasChatUtil.showErrorDialog("Fehler bei der Registrierung", "Unbekannter Fehler",
-								"Bei der erstellung deines Accounts trat ein unbekannter Fehler auf, bitte versuche es erneut.");
+								"Bei der Erstellung deines Accounts trat ein unbekannter Fehler auf, bitte versuche es erneut.");
 					}
 				}
 			}

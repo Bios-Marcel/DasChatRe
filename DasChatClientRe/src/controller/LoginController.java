@@ -52,6 +52,9 @@ public class LoginController
 		String reply = Communication.receive();
 		if (DasChatUtil.beginningEquals(reply, "login_successful:"))
 		{
+			if(autoLoginCheckBox.isSelected()) {
+				//TODO: Gehashes Passwort(password) und Benutzername(loginUsername.getText()) in Konfig speichern
+			}
 			connectionSalt = reply.replace("login_successful:connectionsalt:", "");
 			loginStage.close();
 			new DasChatClient();
