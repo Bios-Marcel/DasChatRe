@@ -59,7 +59,7 @@ public class RegisterController
 						registerPasswordAgain.getStyleClass().remove("textFieldError");
 						registerAccountname.getStyleClass().add("textFieldError");
 						DasChatUtil.showErrorDialog("Fehler bei der Registrierung", "Accountname bereits vergeben",
-								"Der von dir eingegebene Accountname ist bereits von einem anderen Benutzer in Verwendung, bitte wähle einen anderen.");
+								"Der von dir eingegebene Accountname ist bereits von einem anderen Benutzer in verwendung, bitte wähle einen anderen.");
 						break;
 					}
 					default:
