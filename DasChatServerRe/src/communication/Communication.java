@@ -7,6 +7,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Level;
 
 import logger.DasChatLogger;
@@ -24,6 +31,28 @@ public class Communication
 
 	private int					port;
 
+	private PublicKey			ownPublicKey;
+	private PublicKey			clientPublicKey;
+	private PrivateKey			ownPrivateKey;
+
+	public void setClientPublicKey(byte[] publicKey)
+	{
+		try
+		{
+			clientPublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKey));
+		}
+		catch (InvalidKeySpecException | NoSuchAlgorithmException e)
+		{
+			// TODO(msc) Handle Properly
+			DasChatLogger.getLogger().log(Level.SEVERE, e.getMessage(), e);
+		}
+	}
+
+	public PublicKey getOwnPublicKey()
+	{
+		return ownPublicKey;
+	}
+
 	public Communication(Socket inputSocket)
 	{
 		socket = inputSocket;
@@ -35,6 +64,9 @@ public class Communication
 		InputStream in = socket.getInputStream();
 		outputStream = new DataOutputStream(out);
 		inputStream = new DataInputStream(in);
+		final KeyPair pair = DasChatUtil.generateKey();
+		ownPublicKey = pair.getPublic();
+		ownPrivateKey = pair.getPrivate();
 	}
 
 	public String getHost()
@@ -63,12 +95,46 @@ public class Communication
 	 * @param toSend
 	 *            String welcher zu senden ist
 	 */
+	public void sendOwnPublicKey(byte[] publicKeyBytes)
+	{
+		try
+		{
+			outputStream.writeInt(publicKeyBytes.length);
+			outputStream.write(publicKeyBytes);
+		}
+		catch (final IOException e)
+		{
+			DasChatLogger.getLogger().log(Level.SEVERE, e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Empfängt ein byte array vom Server , wandelt dieses in einen String um
+	 * und gibt ihn zurück
+	 *
+	 * @return den String der zurückgegeben wird oder null im Falle eines
+	 *         Fehlschlages
+	 */
+	public byte[] receivePublicKey() throws IOException
+	{
+		final int length = inputStream.readInt();
+		final byte[] compressed = new byte[length];
+		inputStream.readFully(compressed, 0, length);
+		return compressed;
+	}
+
+	/**
+	 * Sendet einen String als UTF-8 Encoded Byte Array an den Server.
+	 *
+	 * @param toSend
+	 *            String welcher zu senden ist
+	 */
 	public void send(final String toSend)
 	{
 		try
 		{
 			byte[] bytesToSend = toSend.getBytes(StandardCharsets.UTF_8);
-			bytesToSend = DasChatUtil.compress(bytesToSend);
+			bytesToSend = DasChatUtil.encrypt(bytesToSend, clientPublicKey);
 			outputStream.writeInt(bytesToSend.length);
 			outputStream.write(bytesToSend);
 		}
@@ -90,7 +156,8 @@ public class Communication
 		final int length = inputStream.readInt();
 		final byte[] compressed = new byte[length];
 		inputStream.readFully(compressed, 0, length);
-		final byte[] message = DasChatUtil.decompress(compressed);
-		return new String(message, StandardCharsets.UTF_8);
+
+		return new String(DasChatUtil.decrypt(compressed, ownPrivateKey), StandardCharsets.UTF_8);
 	}
+
 }

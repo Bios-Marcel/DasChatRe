@@ -10,7 +10,6 @@ import util.PasswordValidator;
 
 public class RegisterController
 {
-	private String kys = "";
 	private Stage					registerStage;
 
 	// FXML Variables
@@ -42,7 +41,7 @@ public class RegisterController
 				registerPassword.getStyleClass().remove("textFieldError");
 				registerPasswordAgain.getStyleClass().remove("textFieldError");
 				String hashedPassword = String.format("%064x",
-						new java.math.BigInteger(1, DasChatUtil.hashPassword(registerPassword.getText(), 5000000)));
+						new java.math.BigInteger(1, DasChatUtil.hashPassword(registerPassword.getText(), 50000)));
 				Communication.send("register:" + registerAccountname.getText() + "screenname:"
 						+ registerScreenname.getText() + "password:" + hashedPassword);
 				String reply = Communication.receive();
@@ -59,7 +58,7 @@ public class RegisterController
 						registerPasswordAgain.getStyleClass().remove("textFieldError");
 						registerAccountname.getStyleClass().add("textFieldError");
 						DasChatUtil.showErrorDialog("Fehler bei der Registrierung", "Accountname bereits vergeben",
-								"Der von dir eingegebene Accountname ist bereits von einem anderen Benutzer in verwendung, bitte wähle einen anderen.");
+								"Der von dir eingegebene Accountname ist bereits von einem anderen Benutzer in Verwendung, bitte wähle einen anderen.");
 						break;
 					}
 					default:

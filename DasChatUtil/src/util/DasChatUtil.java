@@ -2,12 +2,18 @@ package util;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
+
+import javax.crypto.Cipher;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -15,6 +21,12 @@ import javafx.stage.Modality;
 
 public class DasChatUtil
 {
+
+	/**
+	 * Algorithmus
+	 */
+	public static final String ALGORITHM = "RSA";
+
 	/**
 	 * Generates a random salt and returns it as a String
 	 * 
@@ -28,6 +40,64 @@ public class DasChatUtil
 
 		String saltString = String.format("%064x", new java.math.BigInteger(1, saltBytes));
 		return saltString;
+	}
+
+	/**
+	 * Encrypted String mithilfe von Public Key
+	 */
+	public static byte[] encrypt(byte[] toEncrypt, final PublicKey key)
+	{
+		byte[] cipherText = null;
+		try
+		{
+			final Cipher cipher = Cipher.getInstance(ALGORITHM);
+			cipher.init(Cipher.ENCRYPT_MODE, key);
+			cipherText = cipher.doFinal(toEncrypt);
+		}
+		catch (final Exception e)
+		{
+			e.printStackTrace();
+		}
+		return cipherText;
+	}
+
+	/**
+	 * Decryptet ByteArray mithilfe von Private Key
+	 */
+	public static byte[] decrypt(final byte[] toDecrypt, final PrivateKey key)
+	{
+		byte[] decryptedText = null;
+		try
+		{
+			final Cipher cipher = Cipher.getInstance(ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, key);
+			decryptedText = cipher.doFinal(toDecrypt);
+		}
+		catch (final Exception ex)
+		{
+			ex.printStackTrace();
+		}
+
+		return decryptedText;
+	}
+
+	/**
+	 * Generiert KeyPair
+	 */
+	public static KeyPair generateKey()
+	{
+		try
+		{
+			final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
+			keyGen.initialize(2048);
+			final KeyPair keys = keyGen.generateKeyPair();
+			return keys;
+		}
+		catch (final NoSuchAlgorithmException exception)
+		{
+			exception.printStackTrace();
+			return null;
+		}
 	}
 
 	public static void showErrorDialog(String title, String headerText, String contentText)
@@ -87,7 +157,6 @@ public class DasChatUtil
 		}
 		catch (NoSuchAlgorithmException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -183,6 +252,7 @@ public class DasChatUtil
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			return null;
 		}
 	}

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -42,22 +41,17 @@
                   <VBox maxHeight="1.7976931348623157E308" minHeight="400.0" styleClass="chatList" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox maxHeight="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" HBox.hgrow="ALWAYS">
-               <children>
-                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0">
+            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyTyped="#onChanged" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+		    	<children>
+		      		<WebView minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="SOMETIMES" />
+                  <HBox>
                      <children>
-                        <Label />
+      		      		<TextArea fx:id="messageTextArea" maxWidth="1.7976931348623157E308" onKeyReleased="#onChanged" prefHeight="55.0" wrapText="true" />
+                        <Button fx:id="sendButton" mnemonicParsing="false" />
                      </children>
                   </HBox>
-                  <WebView minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="SOMETIMES" />
-                  <TextArea fx:id="messageTextArea" prefHeight="55.0" promptText="Gib deine Nachricht ein ..." styleClass="messageTextField" wrapText="true" VBox.vgrow="SOMETIMES" />
-                  <HBox VBox.vgrow="NEVER">
-                     <children>
-                        <Button fx:id="sendButton" maxHeight="55.0" mnemonicParsing="false" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
+			   </children>
+			</VBox>
          </children>
       </HBox>
    </children>

@@ -45,6 +45,16 @@ public class UserThread extends Thread
 	private void listenToIncommingCommunication()
 	{
 		DasChatLogger.getLogger().info("Listening to Socket: " + serverSocket.getInetAddress());
+		try
+		{
+			byte[] publicKeyBytes = communication.receivePublicKey();
+			communication.setClientPublicKey(publicKeyBytes);
+			communication.sendOwnPublicKey(communication.getOwnPublicKey().getEncoded());
+		}
+		catch (IOException e2)
+		{
+			e2.printStackTrace();
+		}
 		while (true)
 		{
 			try
@@ -59,7 +69,7 @@ public class UserThread extends Thread
 						String tempAccountname = usernameAndPassword.split("password:")[0].split("screenname:")[0];
 						String tempSalt = DasChatUtil.generateSalt();
 						byte[] tempPasswordBytes = DasChatUtil.hashPassword(tempSalt,
-								usernameAndPassword.split("password:")[1], 5000000);
+								usernameAndPassword.split("password:")[1], 50000);
 						String tempPassword = String.format("%064x", new java.math.BigInteger(1, tempPasswordBytes));
 						createAccount(tempAccountname, tempScreenname, tempSalt, tempPassword);
 					}
@@ -71,7 +81,7 @@ public class UserThread extends Thread
 						connectionSalt = DasChatUtil.generateSalt();
 						Account.createInstance(tempAccountName, connectionSalt);
 						Account account = Account.getInstanceForUser(tempAccountName);
-						byte[] tempPasswordBytes = DasChatUtil.hashPassword(account.getSalt(), tempPassword, 5000000);
+						byte[] tempPasswordBytes = DasChatUtil.hashPassword(account.getSalt(), tempPassword, 50000);
 						tempPassword = String.format("%064x", new java.math.BigInteger(1, tempPasswordBytes));
 						if (tempPassword.equals(account.getPassword()))
 						{

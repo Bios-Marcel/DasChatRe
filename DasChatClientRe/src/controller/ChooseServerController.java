@@ -40,6 +40,9 @@ public class ChooseServerController
 				try
 				{
 					Communication.initalizeCommunicationLayer();
+					Communication.sendOwnPublicKey(Communication.getOwnPublicKey().getEncoded());
+					byte[] publicKeyBytes = Communication.receiveServerPublicKey();
+					Communication.setServerPublicKey(publicKeyBytes);
 					chooseServerStage.close();
 					new DasChatLogin();
 				}

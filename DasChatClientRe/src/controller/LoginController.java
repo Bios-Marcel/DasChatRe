@@ -47,14 +47,16 @@ public class LoginController
 	private void login()
 	{
 		String password = String.format("%064x",
-				new java.math.BigInteger(1, DasChatUtil.hashPassword(loginPassword.getText(), 5000000)));
+				new java.math.BigInteger(1, DasChatUtil.hashPassword(loginPassword.getText(), 50000)));
 		Communication.send("login:" + loginUsername.getText() + "password:" + password);
 		String reply = Communication.receive();
 		if (DasChatUtil.beginningEquals(reply, "login_successful:"))
 		{
-			if(autoLoginCheckBox.isSelected()) {
-				//TODO: Gehashes Passwort(password) und Benutzername(loginUsername.getText()) in Konfig speichern
-			}
+			// NOTE(msc) war doch falsch, kek, an falscher stelle zumindest
+			// if(autoLoginCheckBox.isSelected()) {
+			// //TODO: Gehashes Passwort(password) und
+			// Benutzername(loginUsername.getText()) in Konfig speichern
+			// }
 			connectionSalt = reply.replace("login_successful:connectionsalt:", "");
 			loginStage.close();
 			new DasChatClient();
