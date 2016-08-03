@@ -52,7 +52,6 @@ public class LoginController
 		String reply = Communication.receive();
 		if (DasChatUtil.beginningEquals(reply, "login_successful:"))
 		{
-			// NOTE(msc) war doch falsch, kek, an falscher stelle zumindest
 			// if(autoLoginCheckBox.isSelected()) {
 			// //TODO: Gehashes Passwort(password) und
 			// Benutzername(loginUsername.getText()) in Konfig speichern
