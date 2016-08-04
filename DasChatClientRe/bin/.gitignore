@@ -1,12 +1,5 @@
-/application/
-/chooseServer/
-/client/
-/communication/
-/components/
-/constants/
-/controller/
-/images/
-/logger/
-/login/
 /register/
+/controller/
+/communication/
+/client/
 /style/

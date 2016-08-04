@@ -1,11 +1,12 @@
 package controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -14,10 +15,8 @@ public class ClientController
 	Stage				clientStage;
 
 	@FXML
-	private Button		sendButton;
-
-	@FXML
 	private TextArea	messageTextArea;
+	Text				messageTextAreaText;
 
 	public ClientController(Stage stage)
 	{
@@ -25,25 +24,72 @@ public class ClientController
 	}
 
 	/**
-	 * Setzt die Größe der TextArea bei User Eingabe
+	 * Setzt die {@link #messageTextArea TextArea zum Nachrichten schreiben} auf
+	 * die richtige Größe
 	 */
-	@FXML
-	private void onChanged()
+	private void updateTextAreaSize()
 	{
-		Text text = (Text) messageTextArea.lookup(".text");
-		messageTextArea.setPrefHeight(((Bounds) text.boundsInParentProperty().get()).getMaxY() + 25.0);
+		messageTextArea.setPrefHeight(((Bounds) messageTextAreaText.boundsInParentProperty().get()).getMaxY() + 30.0);
 	}
 
 	/**
-	 * Setzt alle Nötigen Dinge für die Komponenten
+	 * Behandelt die Tastendrücke in der {@link #messageTextArea TextArea zum
+	 * Nachrichten schreiben}.
+	 * 
+	 * @param e
+	 *            vom FXML übergebenes KeyEvent
 	 */
-	public void initComponents()
+	@FXML
+	private void messageTextAreaKeyListener(KeyEvent e)
 	{
-		ImageView buttonImage = new ImageView(new Image(this.getClass().getResourceAsStream("/images/sendButton.png")));
-		sendButton.setGraphic(buttonImage);
+		if (e.getCode() == KeyCode.ENTER)
+		{
+			sendMessage();
+		}
+	}
 
-		// NOTE(msc) Setzt die Größe der TextArea initial richtig
-		Text text = (Text) messageTextArea.lookup(".text");
-		messageTextArea.setPrefHeight(((Bounds) text.boundsInParentProperty().get()).getMaxY() + 25.0);
+	private void sendMessage()
+	{
+		// TODO(msc) Code
+	}
+
+	/**
+	 * Initialisiert alle nötigen Dinge für den Client
+	 */
+	public void init()
+	{
+		// NOTE(msc) Auskommentiert da der Senden Button entfernt wurde.
+		// ImageView buttonImage = new ImageView(new
+		// Image(this.getClass().getResourceAsStream("/images/sendButton.png")));
+		// sendButton.setGraphic(buttonImage);
+
+		messageTextAreaText = (Text) messageTextArea.lookup(".text");
+
+		updateTextAreaSize();
+
+		initListeners();
+	}
+
+	/**
+	 * Initialisiert die nötigen Listener für den Client.
+	 */
+	private void initListeners()
+	{
+		messageTextArea.textProperty().addListener(new ChangeListener<String>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
+			{
+				updateTextAreaSize();
+			}
+		});
+		clientStage.getScene().widthProperty().addListener(new ChangeListener<Number>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+			{
+				updateTextAreaSize();
+			}
+		});
 	}
 }

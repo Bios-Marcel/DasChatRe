@@ -38,7 +38,7 @@ public class DasChatClient
 			primaryStage.setMinWidth(primaryStage.getWidth());
 			primaryStage.setMinHeight(primaryStage.getHeight());
 			ClientController controller = loader.getController();
-			controller.initComponents();
+			controller.init();
 		}
 		catch (Exception e)
 		{

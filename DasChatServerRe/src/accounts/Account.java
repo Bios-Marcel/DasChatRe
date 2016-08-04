@@ -29,7 +29,6 @@ public class Account
 	private String	accountName;
 	private String	salt;
 	private String	connectionSalt;
-	private String	screenName;
 	private String	password;
 
 	public Account(String accName, String securitySalt)
@@ -48,7 +47,6 @@ public class Account
 			{
 				accountProperties.load(input);
 				accountName = accountProperties.getProperty("accountname");
-				screenName = accountProperties.getProperty("screenname");
 				salt = accountProperties.getProperty("salt");
 				password = accountProperties.getProperty("password");
 
@@ -75,11 +73,6 @@ public class Account
 	public String getSalt()
 	{
 		return salt;
-	}
-
-	public String getScreenName()
-	{
-		return screenName;
 	}
 
 	public String getConnectionSalt()

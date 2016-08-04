@@ -156,7 +156,6 @@ public class Communication
 		final int length = inputStream.readInt();
 		final byte[] compressed = new byte[length];
 		inputStream.readFully(compressed, 0, length);
-
 		return new String(DasChatUtil.decrypt(compressed, ownPrivateKey), StandardCharsets.UTF_8);
 	}
 

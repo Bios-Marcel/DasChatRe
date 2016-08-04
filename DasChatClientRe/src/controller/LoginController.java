@@ -60,6 +60,13 @@ public class LoginController
 			loginStage.close();
 			new DasChatClient();
 		}
+		else
+		{
+			loginUsername.getStyleClass().add("textFieldError");
+			loginPassword.getStyleClass().add("textFieldError");
+			DasChatUtil.showErrorDialog("DasChat - Login", "Fehler bei der Anemldung",
+					"Dein Benutzername oder dein Passwort sind falsch.");
+		}
 	}
 
 	@FXML

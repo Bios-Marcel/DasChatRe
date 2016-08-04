@@ -29,17 +29,22 @@ public class UserThread extends Thread
 		}
 		catch (IOException e)
 		{
-			try
-			{
-				serverSocket.close();
-				this.interrupt();
-			}
-			catch (IOException e1)
-			{
-				e1.printStackTrace();
-			}
+			disconnectUser();
 		}
 		listenToIncommingCommunication();
+	}
+
+	private void disconnectUser()
+	{
+		try
+		{
+			serverSocket.close();
+			this.interrupt();
+		}
+		catch (IOException e1)
+		{
+			e1.printStackTrace();
+		}
 	}
 
 	private void listenToIncommingCommunication()
@@ -65,13 +70,12 @@ public class UserThread extends Thread
 					if (DasChatUtil.beginningEquals(message, "register:"))
 					{
 						String usernameAndPassword = message.replace("register:", "");
-						String tempScreenname = usernameAndPassword.split("password:")[0].split("screenname:")[1];
-						String tempAccountname = usernameAndPassword.split("password:")[0].split("screenname:")[0];
+						String tempAccountname = usernameAndPassword.split("password:")[0];
 						String tempSalt = DasChatUtil.generateSalt();
 						byte[] tempPasswordBytes = DasChatUtil.hashPassword(tempSalt,
 								usernameAndPassword.split("password:")[1], 50000);
 						String tempPassword = String.format("%064x", new java.math.BigInteger(1, tempPasswordBytes));
-						createAccount(tempAccountname, tempScreenname, tempSalt, tempPassword);
+						createAccount(tempAccountname, tempSalt, tempPassword);
 					}
 					else if (DasChatUtil.beginningEquals(message, "login:"))
 					{
@@ -86,6 +90,10 @@ public class UserThread extends Thread
 						if (tempPassword.equals(account.getPassword()))
 						{
 							communication.send("login_successful:connectionsalt:" + connectionSalt);
+						}
+						else
+						{
+							communication.send("login_failed");
 						}
 					}
 				}
@@ -106,7 +114,7 @@ public class UserThread extends Thread
 		}
 	}
 
-	private void createAccount(String accName, String screenName, String salt, String password)
+	private void createAccount(String accName, String salt, String password)
 	{
 		File accountFile = new File("accounts" + File.separator + accName + ".acc");
 		if (!accountFile.exists())
@@ -118,7 +126,6 @@ public class UserThread extends Thread
 				{
 					Properties properties = new Properties();
 					properties.setProperty("accountname", accName);
-					properties.setProperty("screenname", screenName);
 					properties.setProperty("salt", salt);
 					properties.setProperty("password", password);
 					properties.store(new FileOutputStream(accountFile), null);

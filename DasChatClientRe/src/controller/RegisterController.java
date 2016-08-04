@@ -17,9 +17,6 @@ public class RegisterController
 	private TextField				registerAccountname;
 
 	@FXML
-	private TextField				registerScreenname;
-
-	@FXML
 	private ExtendedPasswordField	registerPassword;
 
 	@FXML
@@ -42,8 +39,7 @@ public class RegisterController
 				registerPasswordAgain.getStyleClass().remove("textFieldError");
 				String hashedPassword = String.format("%064x",
 						new java.math.BigInteger(1, DasChatUtil.hashPassword(registerPassword.getText(), 50000)));
-				Communication.send("register:" + registerAccountname.getText() + "screenname:"
-						+ registerScreenname.getText() + "password:" + hashedPassword);
+				Communication.send("register:" + registerAccountname.getText() + "password:" + hashedPassword);
 				String reply = Communication.receive();
 				switch (reply)
 				{
@@ -57,8 +53,8 @@ public class RegisterController
 						registerPassword.getStyleClass().remove("textFieldError");
 						registerPasswordAgain.getStyleClass().remove("textFieldError");
 						registerAccountname.getStyleClass().add("textFieldError");
-						DasChatUtil.showErrorDialog("Fehler bei der Registrierung", "Accountname bereits vergeben",
-								"Der von dir eingegebene Accountname ist bereits von einem anderen Benutzer in Verwendung, bitte wähle einen anderen.");
+						DasChatUtil.showErrorDialog("DasChat - Registrierung", "Benutzername bereits vergeben",
+								"Der von dir eingegebene Benutzername ist bereits von einem anderen Benutzer in Verwendung, bitte wähle einen anderen.");
 						break;
 					}
 					default:
@@ -66,7 +62,7 @@ public class RegisterController
 						registerPassword.getStyleClass().remove("textFieldError");
 						registerPasswordAgain.getStyleClass().remove("textFieldError");
 						registerAccountname.getStyleClass().remove("textFieldError");
-						DasChatUtil.showErrorDialog("Fehler bei der Registrierung", "Unbekannter Fehler",
+						DasChatUtil.showErrorDialog("DasChat - Registrierung", "Fehler bei der Registrierung",
 								"Bei der Erstellung deines Accounts trat ein unbekannter Fehler auf, bitte versuche es erneut.");
 					}
 				}
@@ -75,7 +71,7 @@ public class RegisterController
 			{
 				registerPassword.getStyleClass().add("textFieldError");
 				registerPasswordAgain.getStyleClass().add("textFieldError");
-				DasChatUtil.showErrorDialog("Fehler bei der Registrierung", "Ungültiges Passwort",
+				DasChatUtil.showErrorDialog("DasChat - Registrierung", "Ungültiges Passwort",
 						"Das von dir eingegebene Passwort ist nicht sicher genug, es muss mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Symbol enthalten, außerdem muss es mindestens 10 Zeichen lang sein.");
 			}
 		}
@@ -84,7 +80,7 @@ public class RegisterController
 
 			registerPassword.getStyleClass().add("textFieldError");
 			registerPasswordAgain.getStyleClass().add("textFieldError");
-			DasChatUtil.showErrorDialog("Fehler bei der Registrierung", "Passwörter stimmen nicht überein",
+			DasChatUtil.showErrorDialog("DasChat - Registrierung", "Passwörter stimmen nicht überein",
 					"Die von dir eingegebenen Passwörter stimmen nicht überein.");
 		}
 	}

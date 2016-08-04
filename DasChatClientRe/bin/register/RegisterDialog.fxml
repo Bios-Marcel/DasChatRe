@@ -11,13 +11,13 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label text="Gebe einen Accountname, einen Anzeigename(sichtbarer Name, jederzeit änderbar) und ein Passwort ein." />
+      <Label text="Gebe einen Benutzername und ein Passwort ein." />
       <Label text="Dein Passwort muss mindestens eine Zahl und ein Symbol enthalten, sowie aus mindestens 10 Zeichen bestehen." wrapText="true">
          <padding>
             <Insets top="3.0" />
          </padding>
       </Label>
-      <Label text="Accountname">
+      <Label text="Benutzername">
          <padding>
             <Insets top="15.0" />
          </padding>
@@ -27,12 +27,6 @@
             <Insets top="1.0" />
          </VBox.margin>
       </TextField>
-      <Label text="Anzeigename">
-         <padding>
-            <Insets top="5.0" />
-         </padding>
-      </Label>
-      <TextField fx:id="registerScreenname" />
       <Label text="Passwort">
          <padding>
             <Insets top="15.0" />
