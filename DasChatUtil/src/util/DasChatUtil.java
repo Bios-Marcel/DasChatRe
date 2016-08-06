@@ -164,37 +164,6 @@ public class DasChatUtil
 	}
 
 	/**
-	 * Hashes a given password 10 Million times using a salt and SHA-256
-	 * 
-	 * @param password
-	 *            password that is to hash
-	 * @return hashed password as bytes
-	 * @throws NoSuchAlgorithmException
-	 *             if a wrong algorithm is used
-	 */
-	public static byte[] hashPassword(String password, int rounds)
-	{
-		byte[] hash = null;
-		try
-		{
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-
-			for (int i = 0; i < rounds; i++)
-			{
-				hash = digest.digest(hash);
-			}
-		}
-		catch (NoSuchAlgorithmException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return hash;
-	}
-
-	/**
 	 * Compresses and returns a given byte array.
 	 * 
 	 * @param data

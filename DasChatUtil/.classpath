@@ -6,5 +6,6 @@
 			<accessrule kind="accessible" pattern="javafx/scene/control/**"/>
 		</accessrules>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/DasChatShared"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

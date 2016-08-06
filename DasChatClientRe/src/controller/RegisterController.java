@@ -2,6 +2,7 @@ package controller;
 
 import communication.Communication;
 import components.ExtendedPasswordField;
+import constants.Keywords;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -37,8 +38,8 @@ public class RegisterController
 			{
 				registerPassword.getStyleClass().remove("textFieldError");
 				registerPasswordAgain.getStyleClass().remove("textFieldError");
-				String hashedPassword = String.format("%064x",
-						new java.math.BigInteger(1, DasChatUtil.hashPassword(registerPassword.getText(), 50000)));
+				String hashedPassword = String.format("%064x", new java.math.BigInteger(1,
+						DasChatUtil.hashPassword(Keywords.EMPTY_STRING, registerPassword.getText(), 50000)));
 				Communication.send("register:" + registerAccountname.getText() + "password:" + hashedPassword);
 				String reply = Communication.receive();
 				switch (reply)

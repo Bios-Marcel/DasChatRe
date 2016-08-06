@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -17,6 +16,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Level;
 
 import logger.DasChatLogger;
+import shared.Standards;
 import util.DasChatUtil;
 
 public class Communication
@@ -133,7 +133,7 @@ public class Communication
 	{
 		try
 		{
-			byte[] bytesToSend = toSend.getBytes(StandardCharsets.UTF_8);
+			byte[] bytesToSend = toSend.getBytes(Standards.DEFAULT_ENCODING);
 			bytesToSend = DasChatUtil.encrypt(bytesToSend, clientPublicKey);
 			outputStream.writeInt(bytesToSend.length);
 			outputStream.write(bytesToSend);
@@ -156,7 +156,7 @@ public class Communication
 		final int length = inputStream.readInt();
 		final byte[] compressed = new byte[length];
 		inputStream.readFully(compressed, 0, length);
-		return new String(DasChatUtil.decrypt(compressed, ownPrivateKey), StandardCharsets.UTF_8);
+		return new String(DasChatUtil.decrypt(compressed, ownPrivateKey), Standards.DEFAULT_ENCODING);
 	}
 
 }

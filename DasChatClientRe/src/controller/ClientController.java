@@ -1,22 +1,26 @@
 package controller;
 
+import communication.Communication;
+import constants.Keywords;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import logger.DasChatLogger;
 
 public class ClientController
 {
-	Stage				clientStage;
+	private Stage		clientStage;
 
 	@FXML
 	private TextArea	messageTextArea;
-	Text				messageTextAreaText;
+	private Text		messageTextAreaText;
+
+	private Thread		listenToServerThread;
 
 	public ClientController(Stage stage)
 	{
@@ -29,7 +33,7 @@ public class ClientController
 	 */
 	private void updateTextAreaSize()
 	{
-		messageTextArea.setPrefHeight(((Bounds) messageTextAreaText.boundsInParentProperty().get()).getMaxY() + 30.0);
+		messageTextArea.setPrefHeight(messageTextAreaText.boundsInParentProperty().get().getMaxY() + 30.0);
 	}
 
 	/**
@@ -68,6 +72,32 @@ public class ClientController
 		updateTextAreaSize();
 
 		initListeners();
+
+		listenToServer();
+	}
+
+	private void listenToServer()
+	{
+		Runnable listening = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				while (true)
+				{
+
+					String serverMessage = Communication.receive();
+					// TODO(msc) handle server response
+					if (serverMessage.equals(Keywords.ERROR_WHILE_RECEIVING_MESSAGE))
+					{
+						DasChatLogger.getLogger().severe("Die Verbindung mit dem Server wurde unterbrochen.");
+					}
+				}
+
+			}
+		};
+		listenToServerThread = new Thread(listening);
+
 	}
 
 	/**
