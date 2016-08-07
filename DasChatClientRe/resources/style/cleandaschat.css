@@ -1,0 +1,70 @@
+.text-area
+{
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: #cbcedc;
+    -fx-background-insets: 0, 1;
+}
+.border-bottom-only
+{
+	-fx-border-color: black;
+	-fx-border-width: 0 0 1 0 !important;
+	-fx-border-insets: 0 3 5 3;
+}
+.text-area:focused
+{
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: #cbcedc;
+    -fx-background-radius: 0;
+}
+.text-area .content {
+    -fx-background-color: #cbcedc;
+}
+.text-area:selected
+{
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+
+.text-area:contains-focus
+{
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+.text-field
+{
+	-fx-border-width: 0 0 1 0 !important;
+	-fx-border-color: darkgrey;
+	-fx-border-insets: 0 6 0 6;
+    -fx-border-radius: 0;
+    
+    -fx-padding: 3 5 3 5;
+    
+    -fx-background-radius: 0;
+    -fx-background-color: #9ad9ea;
+}
+.separatorChats
+{
+	-fx-pref-height: 10px;
+    -fx-background-color: #9ad9ea;
+   	-fx-effect: null;
+   	-fx-border-color: #9ad9ea;
+   	-fx-border-width: 0px !important;
+}
+.chatList
+{
+    -fx-background-color: #9ad9ea;
+}
+.menu-bar
+{
+	-fx-border-radius: 0;
+	-fx-background-radius: 0;
+	-fx-background-color: #0ed7fb;
+	-fx-effect: null;
+	-fx-border-width: 0;
+	-fx-padding: 0 0 10 0;
+}
+

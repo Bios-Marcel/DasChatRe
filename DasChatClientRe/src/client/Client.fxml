@@ -18,11 +18,9 @@
         <menus>
           <Menu mnemonicParsing="false" text="DasChat">
             <items>
-              <MenuItem mnemonicParsing="false" text="ExmapleMenuItem" />
               <MenuItem mnemonicParsing="false" text="Abmelden" />
               <SeparatorMenuItem/>
-              <MenuItem mnemonicParsing="false" text="Schließen" />
-              <MenuItem mnemonicParsing="false" text="ExmapleMenuItem" />           
+              <MenuItem mnemonicParsing="false" text="Schließen" />         
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Hilfe">
@@ -37,7 +35,6 @@
             <VBox maxHeight="1.7976931348623157E308" minWidth="250.0">
                <children>
                   <TextField />
-                  <Separator prefWidth="200.0" styleClass="separatorChats" />
                   <VBox maxHeight="1.7976931348623157E308" minHeight="400.0" styleClass="chatList" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>

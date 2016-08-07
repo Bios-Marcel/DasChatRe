@@ -29,7 +29,8 @@ public class DasChatClient
 			final Parent root = loader.load();
 			final Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
-			primaryStage.getScene().getStylesheets().add(getClass().getResource("/style/daschat.css").toExternalForm());
+			primaryStage.getScene().getStylesheets()
+					.add(getClass().getResource("/style/cleandaschat.css").toExternalForm());
 			primaryStage.setTitle("DasChat");
 			primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/icon.png")));
 			primaryStage.show();
