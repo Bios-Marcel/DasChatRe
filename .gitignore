@@ -1,0 +1,10 @@
+/Log.txt
+*.class
+DasChatServerRe/bin/
+/DasChatServerRe/bin/
+DasChatClientRe/bin/
+/DasChatClientRe/bin/
+DasChatShared/bin/
+/DasChatShared/bin/
+DasChatUtil/bin/
+/DasChatUtil/bin/
