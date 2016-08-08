@@ -7,19 +7,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import logger.DasChatLogger;
 import util.DasChatUtil;
 
 public class DasChatLogin
 {
 
-	public DasChatLogin()
+	public DasChatLogin(Stage owner)
 	{
-		buildLoginDialog();
+		buildLoginDialog(owner);
 	}
 
-	private void buildLoginDialog()
+	private void buildLoginDialog(Stage owner)
 	{
 		Stage primaryStage = new Stage();
 		final FXMLLoader loader = new FXMLLoader();
@@ -29,9 +31,14 @@ public class DasChatLogin
 		{
 			final Parent root = loader.load();
 			final Scene scene = new Scene(root);
+			primaryStage.initOwner(owner);
+			primaryStage.initModality(Modality.APPLICATION_MODAL);
+			primaryStage.initStyle(StageStyle.UNDECORATED);
 			primaryStage.setScene(scene);
 			primaryStage.getScene().getStylesheets()
 					.add(getClass().getResource("/style/application.css").toExternalForm());
+			primaryStage.getScene().getStylesheets()
+					.add(getClass().getResource("/style/daschatre.css").toExternalForm());
 			primaryStage.setTitle("DasChat - Login");
 			primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/icon.png")));
 			primaryStage.show();

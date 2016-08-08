@@ -2,12 +2,12 @@ package controller;
 
 import java.io.IOException;
 
+import client.DasChatClient;
 import communication.Communication;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
-import login.DasChatLogin;
 import util.DasChatUtil;
 
 public class ChooseServerController
@@ -44,7 +44,7 @@ public class ChooseServerController
 					byte[] publicKeyBytes = Communication.receiveServerPublicKey();
 					Communication.setServerPublicKey(publicKeyBytes);
 					chooseServerStage.close();
-					new DasChatLogin();
+					new DasChatClient();
 				}
 				catch (IOException cantConnect)
 				{

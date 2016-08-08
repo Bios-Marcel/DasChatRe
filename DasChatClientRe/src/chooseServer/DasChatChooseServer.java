@@ -28,6 +28,8 @@ public class DasChatChooseServer extends Application
 			primaryStage.setScene(scene);
 			primaryStage.getScene().getStylesheets()
 					.add(getClass().getResource("/style/application.css").toExternalForm());
+			primaryStage.getScene().getStylesheets()
+					.add(getClass().getResource("/style/daschatre.css").toExternalForm());
 			primaryStage.setTitle("DasChat - Server auswählen");
 			primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/icon.png")));
 			primaryStage.show();

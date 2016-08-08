@@ -1,6 +1,5 @@
 package controller;
 
-import client.DasChatClient;
 import communication.Communication;
 import constants.Keywords;
 import javafx.fxml.FXML;
@@ -59,7 +58,6 @@ public class LoginController
 			// }
 			connectionSalt = reply.replace("login_successful:connectionsalt:", "");
 			loginStage.close();
-			new DasChatClient();
 		}
 		else if (reply.equals("login_failed"))
 		{

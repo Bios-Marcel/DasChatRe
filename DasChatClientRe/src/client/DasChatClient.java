@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import logger.DasChatLogger;
+import login.DasChatLogin;
 import util.DasChatUtil;
 
 public class DasChatClient
@@ -40,6 +41,7 @@ public class DasChatClient
 			primaryStage.setMinHeight(primaryStage.getHeight());
 			ClientController controller = loader.getController();
 			controller.init();
+			new DasChatLogin(primaryStage);
 		}
 		catch (Exception e)
 		{
