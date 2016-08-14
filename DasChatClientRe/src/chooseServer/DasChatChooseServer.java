@@ -20,7 +20,8 @@ public class DasChatChooseServer extends Application
 	{
 		final FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ChooseServerDialog.fxml"));
-		loader.setController(new ChooseServerController(primaryStage));
+		ChooseServerController controller = new ChooseServerController(primaryStage);
+		loader.setController(controller);
 		try
 		{
 			final Parent root = loader.load();
@@ -28,8 +29,8 @@ public class DasChatChooseServer extends Application
 			primaryStage.setScene(scene);
 			primaryStage.getScene().getStylesheets()
 					.add(getClass().getResource("/style/application.css").toExternalForm());
-			primaryStage.getScene().getStylesheets()
-					.add(getClass().getResource("/style/daschatre.css").toExternalForm());
+			// primaryStage.getScene().getStylesheets()
+			// .add(getClass().getResource("/style/daschatre.css").toExternalForm());
 			primaryStage.setTitle("DasChat - Server auswählen");
 			primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/icon.png")));
 			primaryStage.show();
@@ -39,6 +40,7 @@ public class DasChatChooseServer extends Application
 			primaryStage.setMinHeight(primaryStage.getHeight());
 			primaryStage.setMaxWidth(primaryStage.getWidth());
 			primaryStage.setMaxHeight(primaryStage.getHeight());
+			controller.initialize();
 		}
 		catch (Exception e)
 		{

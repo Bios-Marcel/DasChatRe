@@ -1,16 +1,29 @@
 package server;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import chat.Channel;
+import communication.Communication;
+import constants.Paths;
+import exceptions.ChannelCreateException;
+import exceptions.PropertiesLoadException;
 import logger.DasChatLogger;
 import settings.Settings;
+import util.DasChatUtil;
 
 public class DasChatServerMain
 {
 
-	static Logger logger = DasChatLogger.getLogger();
+	static Logger						logger						= DasChatLogger.getLogger();
+
+	public static List<Communication>	userCommunicationInstances	= new ArrayList<>();
 
 	public static void main(String[] args)
 	{
@@ -18,6 +31,60 @@ public class DasChatServerMain
 
 		Settings.getInstance().loadSettings();
 
+		initializeChats();
+
+		listenToIncommingConnections();
+	}
+
+	/**
+	 * Überprüft ob der Chat Ordner existiert und erstellt diesen gegebenfalls.
+	 * Anschließend werden alle Chats welche geladen werden können geladen.
+	 */
+	private static void initializeChats()
+	{
+		File chatFolder = new File(Paths.CHATS_LOCATION);
+		if (chatFolder.exists())
+		{
+			File[] chatFolders = chatFolder.listFiles();
+			for (File file : chatFolders)
+			{
+				if (file.isDirectory())
+				{
+					File config = new File(file.getPath() + File.separator + "config.cfg");
+					if (config.exists())
+					{
+						try
+						{
+							Properties properties = DasChatUtil.loadProperties(config.getPath());
+							try
+							{
+								Channel.addChannel(new Channel(file, properties));
+							}
+							catch (ChannelCreateException e)
+							{
+								logger.log(Level.SEVERE, "Channel " + file.getPath() + " konnte nicht geladen werden.");
+							}
+						}
+						catch (PropertiesLoadException e)
+						{
+							logger.log(Level.SEVERE, e.getMessage());
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			chatFolder.mkdir();
+			initializeChats();
+		}
+	}
+
+	/**
+	 * Akzeptiert einkommende Vrebindungen.
+	 */
+	private static void listenToIncommingConnections()
+	{
 		try (ServerSocket serverSocket = new ServerSocket(Settings.getInstance().getPort()))
 		{
 			while (true)

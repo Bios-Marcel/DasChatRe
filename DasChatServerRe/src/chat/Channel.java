@@ -1,0 +1,220 @@
+package chat;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
+
+import constants.Paths;
+import exceptions.ChannelCreateException;
+import logger.DasChatLogger;
+
+public class Channel
+{
+	/**
+	 * Set welches die Channel Objekte beinhaltet, da jeder Channel nur einmal
+	 * existieren kann wurde ein Set genutzt.
+	 */
+	static Set<Channel>		channelSet			= new HashSet<>();
+
+	/**
+	 * Name des Channels.
+	 */
+	private String			name;
+
+	/**
+	 * Liste aller Nutzer mit Admin Rechten für den jeweiligen Channel.
+	 */
+	private Set<String>		admins				= new HashSet<>();
+	/**
+	 * Liste aller Nutzer des jeweiligen Channels.
+	 */
+	private Set<String>		users				= new HashSet<>();
+
+	private List<String>	messageSaveQueue	= new ArrayList<>();
+
+	private String			parentDirectoryName;
+
+	private BufferedWriter	bufferedWriter;
+
+	public static Set<Channel> getChannels()
+	{
+		return channelSet;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public Set<String> getUsers()
+	{
+		return users;
+	}
+
+	/**
+	 * Gibt für den Nutzer relevante Daten des Channels in Form eines Strings
+	 * zurück.
+	 */
+	@Override
+	public String toString()
+	{
+		String channelDataAsString = name + "|";
+		for (String admin : admins)
+		{
+			channelDataAsString = channelDataAsString + "," + admin;
+		}
+		channelDataAsString = channelDataAsString + "|";
+		for (String user : users)
+		{
+			channelDataAsString = channelDataAsString + "," + user;
+		}
+		channelDataAsString = channelDataAsString.replace("|,", "|");
+		return channelDataAsString;
+	}
+
+	/**
+	 * Initialisiert den Channel.
+	 * 
+	 * @param channelProperties
+	 *            Properties des Channel
+	 */
+	public Channel(File parentDirectory, Properties channelProperties) throws ChannelCreateException
+	{
+		parentDirectoryName = parentDirectory.getName();
+
+		loadChannelData(channelProperties);
+
+		initializeMessageQueueWriter();
+	}
+
+	private void initializeMessageQueueWriter()
+	{
+		File chatFile = new File(Paths.CHATS_LOCATION + parentDirectoryName + File.separator + "messages.data");
+		System.out.println(chatFile.getAbsolutePath());
+		if (!chatFile.exists())
+		{
+			try
+			{
+				chatFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				DasChatLogger.getLogger().log(Level.SEVERE,
+						"Chat File '"
+								+ chatFile.getName()
+								+ "' existiert nicht und konnte nicht erstellt werden. ("
+								+ e.getMessage()
+								+ ")");
+			}
+		}
+		try
+		{
+			bufferedWriter =
+					new BufferedWriter(
+							new OutputStreamWriter(new FileOutputStream(chatFile, true), StandardCharsets.UTF_8));
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("Couldn't initialize the BufferedWriter");
+		}
+	}
+
+	private void loadChannelData(Properties channelProperties) throws ChannelCreateException
+	{
+		// load name
+		name = channelProperties.getProperty("name", null);
+		if (Objects.isNull(name) || name.isEmpty())
+		{
+			throw new ChannelCreateException();
+		}
+		String[] tempUsers = channelProperties.getProperty("users", "").split("[,]");
+		if (tempUsers.length != 0)
+		{
+			users.addAll(Arrays.asList(tempUsers));
+		}
+		String[] tempAdmins = channelProperties.getProperty("admins", "").split("[,]");
+		if (tempAdmins.length != 0)
+		{
+			admins.addAll(Arrays.asList(tempAdmins));
+		}
+	}
+
+	/**
+	 * Fügt die Nachrichten zur Queue hinzu.
+	 * 
+	 * @param message
+	 *            zu speichernde Nachricht
+	 */
+	public void addMessageToQueue(String message)
+	{
+		messageSaveQueue.add(message);
+		saveMessagesIfNeccessary();
+	}
+
+	/**
+	 * Sobald 20 oder mehr Nachrichten in der Queue sind werden diese
+	 * abgespeichert.
+	 */
+	private void saveMessagesIfNeccessary()
+	{
+		if (messageSaveQueue.size() >= 20)
+		{
+			for (String message : messageSaveQueue)
+			{
+				try
+				{
+					bufferedWriter.newLine();
+					bufferedWriter.write(message);
+				}
+				catch (IOException e)
+				{
+					DasChatLogger.getLogger().log(Level.SEVERE,
+							"Nachricht konnte nicht gespeichert werden: " + message);
+				}
+			}
+			try
+			{
+				bufferedWriter.flush();
+				messageSaveQueue.clear();
+			}
+			catch (IOException e)
+			{
+				DasChatLogger.getLogger().log(Level.SEVERE, "Nachrichten konnten nicht gespeichert werden.");
+			}
+		}
+	}
+
+	/**
+	 * Fügt einen Channel zum @link {@link #channelSet Channel Set} hinzu.
+	 * 
+	 * @param channelToAdd
+	 *            hinzuzufügender Channel
+	 */
+	public static void addChannel(Channel channelToAdd)
+	{
+		channelSet.add(channelToAdd);
+	}
+
+	/**
+	 * Entfernt einen Channel aus @link {@link #channelSet Channel Set}.
+	 * 
+	 * @param channelToAdd
+	 *            zu entfernender Channel
+	 */
+	public static void removeChannel(Channel channelToRemove)
+	{
+		channelSet.remove(channelToRemove);
+	}
+}

@@ -10,15 +10,15 @@
 <VBox styleClass="window-Background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label text="Gib den Server an mit dem du dich verbinden möchtest (Beispiel: localhost:7777)." />
-      <ComboBox fx:id="chooseServerComboBox" editable="true" maxWidth="1.7976931348623157E308" promptText="Gib eine Server Addresse an ...">
+      <ComboBox fx:id="chooseServerComboBox" onAction="#connectToServer" editable="true" maxWidth="1.7976931348623157E308" promptText="Gib eine Server Addresse an ...">
          <VBox.margin>
             <Insets top="10.0" />
          </VBox.margin>
       </ComboBox>
       <ButtonBar>
         <buttons>
-          <Button mnemonicParsing="false" onAction="#connectToServer" text="Verbinden" />
-            <Button mnemonicParsing="false" onAction="#exitDasChat" text="Schließen" />
+          <Button mnemonicParsing="false" defaultButton="true" onAction="#connectToServer" text="Verbinden" />
+          <Button mnemonicParsing="false" onAction="#exitDasChat" text="Schließen" />
         </buttons>
          <VBox.margin>
             <Insets top="10.0" />

@@ -1,6 +1,9 @@
 package util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -9,12 +12,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.util.Properties;
 import java.util.Random;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import javax.crypto.Cipher;
 
+import exceptions.PropertiesLoadException;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Modality;
@@ -226,6 +231,40 @@ public class DasChatUtil
 		}
 	}
 
+	/**
+	 * Lädt Properties file und gibt geladenens Objekt zurück.
+	 * 
+	 * @param path
+	 *            Pfad der Konfiurationsdatei
+	 * @return das Properties Objekt
+	 * @throws PropertiesLoadException
+	 *             wird geworfen wenn Datei nicht geladen werden konnte oder das
+	 *             Proeprties Objekt empty ist.
+	 */
+	public static Properties loadProperties(String path) throws PropertiesLoadException
+	{
+		File propertiesFile = new File(path);
+		Properties properties = new Properties();
+		try
+		{
+			properties.load(new FileInputStream(propertiesFile));
+		}
+		catch (IOException e)
+		{
+			throw new PropertiesLoadException(
+					"Properties Datei: " + propertiesFile.getPath() + " konnte nicht geladen werden.");
+		}
+		if (properties.isEmpty())
+		{
+			throw new PropertiesLoadException(
+					"Properties Datei: " + propertiesFile.getPath() + " konnte nicht geladen werden.");
+		}
+		return properties;
+	}
+
+	/**
+	 * Schließt die Anwendung.
+	 */
 	public static void exit()
 	{
 		Runtime.getRuntime().exit(0);

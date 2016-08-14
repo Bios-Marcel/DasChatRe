@@ -15,7 +15,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Level;
 
+import accounts.Account;
 import logger.DasChatLogger;
+import server.DasChatServerMain;
 import shared.Standards;
 import util.DasChatUtil;
 
@@ -35,6 +37,13 @@ public class Communication
 	private PublicKey			clientPublicKey;
 	private PrivateKey			ownPrivateKey;
 
+	private Account				userAccount;
+
+	public Account getAccount()
+	{
+		return userAccount;
+	}
+
 	public void setClientPublicKey(byte[] publicKey)
 	{
 		try
@@ -48,6 +57,11 @@ public class Communication
 		}
 	}
 
+	public void setAccount(Account account)
+	{
+		userAccount = account;
+	}
+
 	public PublicKey getOwnPublicKey()
 	{
 		return ownPublicKey;
@@ -56,6 +70,7 @@ public class Communication
 	public Communication(Socket inputSocket)
 	{
 		socket = inputSocket;
+		DasChatServerMain.userCommunicationInstances.add(this);
 	}
 
 	public void initalizeCommunicationLayer() throws IOException
@@ -140,7 +155,15 @@ public class Communication
 		}
 		catch (final IOException e)
 		{
-			DasChatLogger.getLogger().log(Level.SEVERE, e.getMessage(), e);
+			if (e.getMessage().equals("Socket closed"))
+			{
+				DasChatLogger.getLogger().log(Level.SEVERE,
+						"Verbindung zum Nutzer " + userAccount.getName() + " verloren.");
+			}
+			else
+			{
+				DasChatLogger.getLogger().log(Level.SEVERE, e.getMessage(), e);
+			}
 		}
 	}
 

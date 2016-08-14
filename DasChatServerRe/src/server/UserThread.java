@@ -4,11 +4,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 import accounts.Account;
+import chat.Channel;
 import communication.Communication;
 import logger.DasChatLogger;
 import util.DasChatUtil;
@@ -18,6 +26,7 @@ public class UserThread extends Thread
 	Socket			serverSocket;
 	Communication	communication;
 	private String	connectionSalt;
+	private Account	userAccount;
 
 	public UserThread(Socket socket)
 	{
@@ -72,8 +81,8 @@ public class UserThread extends Thread
 						String usernameAndPassword = message.replace("register:", "");
 						String tempAccountname = usernameAndPassword.split("password:")[0];
 						String tempSalt = DasChatUtil.generateSalt();
-						byte[] tempPasswordBytes = DasChatUtil.hashPassword(tempSalt,
-								usernameAndPassword.split("password:")[1], 50000);
+						byte[] tempPasswordBytes =
+								DasChatUtil.hashPassword(tempSalt, usernameAndPassword.split("password:")[1], 50000);
 						String tempPassword = String.format("%064x", new java.math.BigInteger(1, tempPasswordBytes));
 						createAccount(tempAccountname, tempSalt, tempPassword);
 					}
@@ -83,17 +92,71 @@ public class UserThread extends Thread
 						String tempAccountName = usernameAndPassword.split("password:")[0];
 						String tempPassword = usernameAndPassword.split("password:")[1];
 						connectionSalt = DasChatUtil.generateSalt();
-						Account.createInstance(tempAccountName, connectionSalt);
-						Account account = Account.getInstanceForUser(tempAccountName);
+						Account account = new Account(tempAccountName, connectionSalt);
+						userAccount = account;
 						byte[] tempPasswordBytes = DasChatUtil.hashPassword(account.getSalt(), tempPassword, 50000);
 						tempPassword = String.format("%064x", new java.math.BigInteger(1, tempPasswordBytes));
 						if (tempPassword.equals(account.getPassword()))
 						{
+							userAccount = account;
+							communication.setAccount(userAccount);
 							communication.send("login_successful:connectionsalt:" + connectionSalt);
+							for (Channel channel : Channel.getChannels())
+							{
+								if (channel.getUsers().contains(tempAccountName))
+								{
+									String channelDataAsString = channel.toString();
+									communication.send("channel:" + channelDataAsString);
+								}
+							}
+							communication.send("nomorechannels");
 						}
 						else
 						{
 							communication.send("login_failed");
+						}
+					}
+					else if (DasChatUtil.beginningEquals(message, "<msg"))
+					{
+						System.out.println(message);
+						// Nachricht bestteht aus
+						// CHANNELNAME|NACHRICHT(Beinhaltet restliche
+						// Informationen im HTML)
+						Document doc = Jsoup.parse(message);
+						Element msgElement = doc.getElementById("msg");
+						String channelName = msgElement.attr("channel");
+						GregorianCalendar gregCalendar = (GregorianCalendar) GregorianCalendar.getInstance();
+						gregCalendar.setTime(new Date());
+						String time =
+								gregCalendar.get(Calendar.HOUR)
+										+ ":"
+										+ gregCalendar.get(Calendar.MINUTE)
+										+ ":"
+										+ gregCalendar.get(Calendar.SECOND);
+
+						String date =
+								gregCalendar.get(Calendar.DAY_OF_MONTH)
+										+ "."
+										+ gregCalendar.get(Calendar.MONTH)
+										+ "."
+										+ gregCalendar.get(Calendar.YEAR);
+						msgElement.attr("time", time);
+						msgElement.attr("date", date);
+						msgElement.attr("timeinmillis", "" + gregCalendar.getTimeInMillis());
+						message = doc.getElementById("msg").toString();
+						for (Communication userCommunication : DasChatServerMain.userCommunicationInstances)
+						{
+							for (Channel channel : Channel.getChannels())
+							{
+								if (channel.getName().equals(channelName))
+								{
+									channel.addMessageToQueue(message);
+									if (channel.getUsers().contains(userCommunication.getAccount().getName()))
+									{
+										userCommunication.send(message);
+									}
+								}
+							}
 						}
 					}
 				}

@@ -26,6 +26,11 @@ public class ChooseServerController
 		chooseServerStage = stage;
 	}
 
+	public void initialize()
+	{
+		chooseServerComboBox.requestFocus();
+	}
+
 	@FXML
 	private void connectToServer()
 	{

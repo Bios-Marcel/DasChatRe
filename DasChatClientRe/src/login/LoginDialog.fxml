@@ -45,8 +45,8 @@
       <Hyperlink text="Passwort vergessen? Klicke hier um es wiederherzustellen." />
       <ButtonBar>
         <buttons>
-          <Button mnemonicParsing="false" onAction="#login" text="Login" />
-            <Button mnemonicParsing="false" onAction="#exitDasChat" text="Cancel" />
+          <Button mnemonicParsing="false" defaultButton="true" onAction="#login" text="Login" />
+            <Button mnemonicParsing="false" onAction="#exitDasChat" text="Schließen" />
         </buttons>
          <VBox.margin>
             <Insets top="10.0" />

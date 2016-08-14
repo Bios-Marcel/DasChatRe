@@ -1,39 +1,60 @@
-.text-area
-{
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
-    -fx-background-color: #cbcedc;
-    -fx-background-insets: 0, 1;
-}
 .border-bottom-only
 {
 	-fx-border-color: black;
 	-fx-border-width: 0 0 1 0 !important;
 	-fx-border-insets: 0 3 5 3;
 }
+.border-right-only
+{
+	-fx-border-color: black;
+	-fx-border-width: 0 1 0 0 !important;
+}
+
+.text-area
+{
+    -fx-background-color: white;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
 .text-area:focused
 {
+    -fx-background-color: white;	
 	-fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-background-color: #cbcedc;
-    -fx-background-radius: 0;
+    -fx-background-insets: 0;
 }
-.text-area .content {
-    -fx-background-color: #cbcedc;
+.text-area .content
+{
+    -fx-background-color: white;	
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
 }
 .text-area:selected
 {
+    -fx-background-color: white;	
 	-fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-background-insets: 0, 1;
+    -fx-background-insets: 0;
 }
 
 .text-area:contains-focus
 {
+    -fx-background-color: white;	
 	-fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-background-insets: 0, 1;
+    -fx-background-insets: 0;
 }
+.text-area .scroll-pane .viewport
+{
+    -fx-background-color: darkgrey;
+}
+.text-area .scroll-pane
+{
+    -fx-background-color: darkgrey;
+}
+
 .text-field
 {
 	-fx-border-width: 0 0 1 0 !important;
@@ -44,20 +65,42 @@
     -fx-padding: 3 5 3 5;
     
     -fx-background-radius: 0;
-    -fx-background-color: #9ad9ea;
+    -fx-background-color: white;
 }
 .separatorChats
 {
 	-fx-pref-height: 10px;
-    -fx-background-color: #9ad9ea;
+    -fx-background-color: white;
    	-fx-effect: null;
-   	-fx-border-color: #9ad9ea;
+   	-fx-border-color: white;
    	-fx-border-width: 0px !important;
 }
 .chatList
 {
     -fx-background-color: #9ad9ea;
 }
+.chatPane
+{
+	-fx-spacing: 20px;
+	-fx-padding: 0 0 0 20;
+	-fx-min-width: 300px;
+	-fx-min-height: 80px;
+	-fx-background-color: white;
+}
+
+.scroll-pane
+{
+    -fx-background-color: white;
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-effect: null;
+}
+.scroll-pane .viewport
+{
+    -fx-background-color: white;
+}
+
 .menu-bar
 {
 	-fx-border-radius: 0;
@@ -67,4 +110,7 @@
 	-fx-border-width: 0;
 	-fx-padding: 0 0 10 0;
 }
-
+.whitebackground
+{
+	-fx-background-color: white;	
+}

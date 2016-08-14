@@ -14,6 +14,13 @@ import util.DasChatUtil;
 
 public class DasChatClient
 {
+	private static ClientController controller;
+
+	public static ClientController getController()
+	{
+		return controller;
+	}
+
 	public DasChatClient()
 	{
 		buildClient();
@@ -24,11 +31,16 @@ public class DasChatClient
 		Stage primaryStage = new Stage();
 		final FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("Client.fxml"));
-		loader.setController(new ClientController(primaryStage));
+		controller = new ClientController(primaryStage);
+		loader.setController(controller);
 		try
 		{
 			final Parent root = loader.load();
 			final Scene scene = new Scene(root);
+			primaryStage.setOnCloseRequest(close ->
+			{
+				Runtime.getRuntime().exit(0);
+			});
 			primaryStage.setScene(scene);
 			primaryStage.getScene().getStylesheets()
 					.add(getClass().getResource("/style/cleandaschat.css").toExternalForm());
@@ -39,8 +51,6 @@ public class DasChatClient
 			primaryStage.setMaximized(false);
 			primaryStage.setMinWidth(primaryStage.getWidth());
 			primaryStage.setMinHeight(primaryStage.getHeight());
-			ClientController controller = loader.getController();
-			controller.init();
 			new DasChatLogin(primaryStage);
 		}
 		catch (Exception e)

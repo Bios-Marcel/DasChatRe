@@ -3,7 +3,7 @@
 	def-color: #EE0060;
 	def-hover-color: #F52C7D;
 	def-pressed-color: #FF7FB3;
-	def-focused-color: red;
+	def-focused-color: blue;
 }
 
 .window-Background
@@ -118,4 +118,29 @@
 	-fx-border-radius: 0;
     -fx-background-radius: 0;
     -fx-background-insets: 0, 1;
+}
+
+
+.check-box
+{
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
+.check-box .box
+{
+	-fx-background-radius: 0;
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+}
+.check-box:selected .mark {
+   -fx-mark-color: black;
+}
+
+.hyperlink
+{
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
 }

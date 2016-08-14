@@ -37,8 +37,8 @@ public class DasChatLogin
 			primaryStage.setScene(scene);
 			primaryStage.getScene().getStylesheets()
 					.add(getClass().getResource("/style/application.css").toExternalForm());
-			primaryStage.getScene().getStylesheets()
-					.add(getClass().getResource("/style/daschatre.css").toExternalForm());
+			// primaryStage.getScene().getStylesheets()
+			// .add(getClass().getResource("/style/daschatre.css").toExternalForm());
 			primaryStage.setTitle("DasChat - Login");
 			primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/icon.png")));
 			primaryStage.show();
