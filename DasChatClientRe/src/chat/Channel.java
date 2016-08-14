@@ -1,5 +1,6 @@
 package chat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.Set;
 
 import components.ChannelPane;
 import controller.LoginController;
+import javafx.application.Platform;
+import javafx.scene.web.WebView;
 
 public class Channel
 {
@@ -30,7 +33,7 @@ public class Channel
 
 	private ChannelPane		channelPane;
 
-	private List<String>	messages;
+	private List<String>	messages	= new ArrayList<>();
 
 	private static Channel	activeChannel;
 
@@ -57,6 +60,16 @@ public class Channel
 	public static Set<Channel> getChannels()
 	{
 		return channelSet;
+	}
+
+	public void addMessage(String message)
+	{
+		messages.add(message);
+	}
+
+	public List<String> getMessages()
+	{
+		return messages;
 	}
 
 	public String getName()
@@ -98,6 +111,21 @@ public class Channel
 		List<String> admins = Arrays.asList(rawData[1].split("[,]"));
 		users.addAll(Arrays.asList(rawData[2].split("[,]")));
 		setAdmin(admins.contains(LoginController.getName()));
+	}
+
+	public static void loadMessagesForActiveChannel(WebView webView)
+	{
+		String content = "";
+		for (String message : Channel.getActiveChannel().getMessages())
+		{
+			content = content + message;
+		}
+		String finalContent = content;
+		Platform.runLater(() ->
+		{
+			webView.getEngine()
+					.loadContent("<html><head><meta charset='UTF-8'></head><body>" + finalContent + "</body></html>");
+		});
 	}
 
 	/**

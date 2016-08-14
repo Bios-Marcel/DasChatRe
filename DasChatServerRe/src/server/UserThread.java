@@ -116,7 +116,7 @@ public class UserThread extends Thread
 							communication.send("login_failed");
 						}
 					}
-					else if (DasChatUtil.beginningEquals(message, "<msg"))
+					else if (DasChatUtil.beginningEquals(message, "<div"))
 					{
 						System.out.println(message);
 						// Nachricht bestteht aus

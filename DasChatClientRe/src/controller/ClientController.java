@@ -1,14 +1,16 @@
 package controller;
 
+import java.util.Objects;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import chat.Channel;
+import chat.Message;
 import communication.Communication;
 import components.ChannelPane;
 import constants.Keywords;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -37,15 +39,16 @@ public class ClientController
 	@FXML
 	private VBox		chatList;
 
-	// Wird noch genutzt
-	@SuppressWarnings("unused")
 	private Thread		listenToServerThread;
-
-	private String		webViewContent	= "";
 
 	public ClientController(Stage stage)
 	{
 		clientStage = stage;
+	}
+
+	public WebView getMessageBoard()
+	{
+		return messageBoard;
 	}
 
 	/**
@@ -96,19 +99,24 @@ public class ClientController
 	 */
 	private void sendMessage()
 	{
-		String message = messageTextArea.getText();
-		messageTextArea.clear();
-		message = HTMLUtil.escapeHTML(message);
-		message =
-				"<msg id='msg' channel='"
-						+ Channel.getActiveChannel().getName()
-						+ "' user='"
-						+ LoginController.getName()
-						+ "'>"
-						+ message
-						+ "</msg>";
-		System.out.println(message);
-		Communication.send(message);
+		if (!Objects.isNull(Channel.getActiveChannel()))
+		{
+			String message = messageTextArea.getText();
+			if (Message.isNonEmpty(message))
+			{
+				messageTextArea.clear();
+				message = HTMLUtil.escapeHTML(message);
+				message =
+						"<div id='msg' channel='"
+								+ Channel.getActiveChannel().getName()
+								+ "' user='"
+								+ LoginController.getName()
+								+ "'>"
+								+ message
+								+ "</div>";
+				Communication.send(message);
+			}
+		}
 	}
 
 	/**
@@ -136,6 +144,8 @@ public class ClientController
 
 	private void initMessageBoard()
 	{
+		messageBoard.getEngine()
+				.setUserStyleSheetLocation(getClass().getResource("/chatstyle/" + "default.css").toExternalForm());
 		String landingPage =
 				"<html><div style='text-align:center; width: 98%; position: absolute; top: 50%; translateY(-50%);'><span style='color: lightgrey; fonz-size: 20px;'>Wähle einen Chat/Chat Partner aus.</span></div></html>";
 		messageBoard.getEngine().loadContent(landingPage);
@@ -165,24 +175,36 @@ public class ClientController
 					{
 						DasChatLogger.getLogger().severe("Die Verbindung mit dem Server wurde unterbrochen.");
 					}
-					else if (DasChatUtil.beginningEquals(serverMessage, "<msg"))
+					else if (DasChatUtil.beginningEquals(serverMessage, "<div"))
 					{
 						final String message = serverMessage;
 						System.out.println(message);
 						Document doc = Jsoup.parse(message);
 						Element msgElement = doc.getElementById("msg");
 						String channelName = msgElement.attr("channel");
+						String sender = msgElement.attr("user");
+						if (sender.equals(LoginController.getName()))
+						{
+							msgElement.attr("class", "messageblobme");
+						}
+						else
+						{
+							msgElement.attr("class", "messageblob");
+						}
+						String finalMessage = doc.getElementById("msg").toString();
 						// Nachricht bestteht aus
 						// CHANNELNAME|NACHRICHT(Beinhaltet restliche
 						// Informationen im HTML)
+						for (Channel channel : Channel.getChannels())
+						{
+							if (channel.getName().equals(channelName))
+							{
+								channel.addMessage(finalMessage);
+							}
+						}
 						if (Channel.getActiveChannel().getName().equals(channelName))
 						{
-							Platform.runLater(() ->
-							{
-								System.out.println(message);
-								messageBoard.getEngine().loadContent(
-										"<html><head><meta charset='UTF-8'></head><body>" + message + "</body></html>");
-							});
+							Channel.loadMessagesForActiveChannel(messageBoard);
 						}
 					}
 				}

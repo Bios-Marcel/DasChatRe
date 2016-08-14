@@ -1,6 +1,7 @@
 package components;
 
 import chat.Channel;
+import client.DasChatClient;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -35,6 +36,7 @@ public class ChannelPane extends HBox
 				if (this.equals(channel.getChannelPane()))
 				{
 					Channel.setActiveChannel(channel);
+					Channel.loadMessagesForActiveChannel(DasChatClient.getController().getMessageBoard());
 				}
 			}
 			setStyle("-fx-background-color: -fx-focus-color !important;");

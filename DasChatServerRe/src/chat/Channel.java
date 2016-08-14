@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
 import constants.Paths;
-import exceptions.ChannelCreateException;
 import logger.DasChatLogger;
 
 public class Channel
@@ -43,8 +41,6 @@ public class Channel
 	private Set<String>		users				= new HashSet<>();
 
 	private List<String>	messageSaveQueue	= new ArrayList<>();
-
-	private String			parentDirectoryName;
 
 	private BufferedWriter	bufferedWriter;
 
@@ -90,9 +86,9 @@ public class Channel
 	 * @param channelProperties
 	 *            Properties des Channel
 	 */
-	public Channel(File parentDirectory, Properties channelProperties) throws ChannelCreateException
+	public Channel(File parentDirectory, Properties channelProperties)
 	{
-		parentDirectoryName = parentDirectory.getName();
+		name = parentDirectory.getName();
 
 		loadChannelData(channelProperties);
 
@@ -101,7 +97,7 @@ public class Channel
 
 	private void initializeMessageQueueWriter()
 	{
-		File chatFile = new File(Paths.CHATS_LOCATION + parentDirectoryName + File.separator + "messages.data");
+		File chatFile = new File(Paths.CHATS_LOCATION + getName() + File.separator + "messages.data");
 		System.out.println(chatFile.getAbsolutePath());
 		if (!chatFile.exists())
 		{
@@ -127,18 +123,12 @@ public class Channel
 		}
 		catch (FileNotFoundException e)
 		{
-			System.out.println("Couldn't initialize the BufferedWriter");
+			DasChatLogger.getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
-	private void loadChannelData(Properties channelProperties) throws ChannelCreateException
+	private void loadChannelData(Properties channelProperties)
 	{
-		// load name
-		name = channelProperties.getProperty("name", null);
-		if (Objects.isNull(name) || name.isEmpty())
-		{
-			throw new ChannelCreateException();
-		}
 		String[] tempUsers = channelProperties.getProperty("users", "").split("[,]");
 		if (tempUsers.length != 0)
 		{

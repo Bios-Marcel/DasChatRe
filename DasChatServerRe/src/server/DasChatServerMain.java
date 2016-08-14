@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import chat.Channel;
 import communication.Communication;
 import constants.Paths;
-import exceptions.ChannelCreateException;
 import exceptions.PropertiesLoadException;
 import logger.DasChatLogger;
 import settings.Settings;
@@ -56,14 +55,9 @@ public class DasChatServerMain
 						try
 						{
 							Properties properties = DasChatUtil.loadProperties(config.getPath());
-							try
-							{
-								Channel.addChannel(new Channel(file, properties));
-							}
-							catch (ChannelCreateException e)
-							{
-								logger.log(Level.SEVERE, "Channel " + file.getPath() + " konnte nicht geladen werden.");
-							}
+
+							Channel.addChannel(new Channel(file, properties));
+
 						}
 						catch (PropertiesLoadException e)
 						{

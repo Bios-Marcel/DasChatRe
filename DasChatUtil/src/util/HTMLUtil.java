@@ -17,7 +17,7 @@ public class HTMLUtil
 	{
 		String escapedHTML = s;
 		escapedHTML = escapedHTML.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-		escapedHTML = escapedHTML.replace("\n", "<br/>");
+		escapedHTML = escapedHTML.replace("\n", "<br/>").replace(" ", "&nbsp;").replace("\t", "&#9;");
 		return escapedHTML;
 	}
 
