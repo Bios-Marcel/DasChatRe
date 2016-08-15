@@ -79,17 +79,22 @@ public class DasChatServerMain
 	 */
 	private static void listenToIncommingConnections()
 	{
-		try (ServerSocket serverSocket = new ServerSocket(Settings.getInstance().getPort()))
+
+		Thread thread = new Thread(() ->
 		{
-			while (true)
+			try (ServerSocket serverSocket = new ServerSocket(Settings.getInstance().getPort()))
 			{
-				new UserThread(serverSocket.accept()).start();
+				while (true)
+				{
+					new UserThread(serverSocket.accept()).start();
+				}
 			}
-		}
-		catch (final IOException e)
-		{
-			logger.severe("Port " + Settings.getInstance().getPort() + " ist bereits in Benutzung!");
-			Runtime.getRuntime().exit(0);
-		}
+			catch (final IOException e)
+			{
+				logger.severe("Port " + Settings.getInstance().getPort() + " ist bereits in Benutzung!");
+				Runtime.getRuntime().exit(0);
+			}
+		});
+		thread.start();
 	}
 }

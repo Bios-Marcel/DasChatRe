@@ -2,12 +2,12 @@ package controller;
 
 import java.io.IOException;
 
-import client.DasChatClient;
 import communication.Communication;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
+import login.DasChatClient;
 import util.DasChatUtil;
 
 public class ChooseServerController

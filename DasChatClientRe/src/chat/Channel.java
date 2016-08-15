@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 import components.ChannelPane;
-import controller.LoginController;
 import javafx.application.Platform;
 import javafx.scene.web.WebView;
+import login.DasChatClient;
 
 public class Channel
 {
@@ -110,7 +110,7 @@ public class Channel
 		setName(rawData[0]);
 		List<String> admins = Arrays.asList(rawData[1].split("[,]"));
 		users.addAll(Arrays.asList(rawData[2].split("[,]")));
-		setAdmin(admins.contains(LoginController.getName()));
+		setAdmin(admins.contains(DasChatClient.getName()));
 	}
 
 	public static void loadMessagesForActiveChannel(WebView webView)

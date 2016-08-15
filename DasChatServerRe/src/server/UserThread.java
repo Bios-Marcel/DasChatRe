@@ -30,8 +30,14 @@ public class UserThread extends Thread
 
 	public UserThread(Socket socket)
 	{
+		super("UserThread" + socket.getLocalAddress());
 		serverSocket = socket;
-		communication = new Communication(socket);
+	}
+
+	@Override
+	public void run()
+	{
+		communication = new Communication(serverSocket);
 		try
 		{
 			communication.initalizeCommunicationLayer();

@@ -3,22 +3,25 @@ package controller;
 import java.util.logging.Level;
 
 import chat.Channel;
-import client.DasChatClient;
 import communication.Communication;
 import constants.Keywords;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import logger.DasChatLogger;
+import login.DasChatClient;
 import register.DasChatRegister;
 import util.DasChatUtil;
 
 public class LoginController
 {
-	private static Stage	loginStage;
-	private static String	userName;
+	private String			userName;
 
 	// FXML Variables
 	@FXML
@@ -33,21 +36,6 @@ public class LoginController
 	@SuppressWarnings("unused")
 	private String			connectionSalt;
 
-	public LoginController(Stage stage)
-	{
-		loginStage = stage;
-	}
-
-	public static Stage getStage()
-	{
-		return loginStage;
-	}
-
-	public static String getName()
-	{
-		return userName;
-	}
-
 	@FXML
 	private void register()
 	{
@@ -58,9 +46,11 @@ public class LoginController
 	private void login()
 	{
 		userName = loginUsername.getText();
-		String password = String.format("%064x", new java.math.BigInteger(1,
-				DasChatUtil.hashPassword(Keywords.EMPTY_STRING, loginPassword.getText(), 50000)));
+		String password =
+				String.format("%064x", new java.math.BigInteger(1,
+						DasChatUtil.hashPassword(Keywords.EMPTY_STRING, loginPassword.getText(), 50000)));
 		Communication.send("login:" + userName + "password:" + password);
+		DasChatClient.setName(userName);
 		String reply = Communication.receive();
 		if (DasChatUtil.beginningEquals(reply, "login_successful:"))
 		{
@@ -86,8 +76,8 @@ public class LoginController
 					DasChatLogger.getLogger().log(Level.SEVERE, "Channel konnten nicht empfangen werden.");
 				}
 			}
-			DasChatClient.getController().init();
-			loginStage.close();
+			// DasChatClient.getController().init();
+			loadClientScene();
 		}
 		else if (reply.equals("login_failed"))
 		{
@@ -102,6 +92,42 @@ public class LoginController
 			loginPassword.getStyleClass().remove("textFieldError");
 			DasChatUtil.showErrorDialog("DasChat - Login", "Fehler bei der Anmeldung",
 					"Bei der Anmeldung trat ein unbekannter Fehler auf.");
+		}
+	}
+
+	private void loadClientScene()
+	{
+		DasChatClient.loader = new FXMLLoader();
+		DasChatClient.loader.setLocation(getClass().getResource("/client/Client.fxml"));
+		Stage clientStage = DasChatClient.mainStage;
+		ClientController controller = new ClientController();
+		DasChatClient.loader.setController(controller);
+		try
+		{
+			final Parent root = DasChatClient.loader.load();
+			DasChatClient.scene = new Scene(root);
+			clientStage.setOnCloseRequest(close ->
+			{
+				Runtime.getRuntime().exit(0);
+			});
+			clientStage.setScene(DasChatClient.scene);
+			clientStage.getScene().getStylesheets()
+					.add(getClass().getResource("/style/cleandaschat.css").toExternalForm());
+			clientStage.setTitle("DasChat");
+			clientStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/images/icon.png")));
+			clientStage.show();
+			clientStage.setIconified(false);
+			clientStage.setMaximized(false);
+			clientStage.setResizable(true);
+			clientStage.setMinWidth(760);
+			clientStage.setMinHeight(560);
+			controller.init();
+		}
+		catch (Exception e)
+		{
+			DasChatLogger.getLogger().info("DasChat konnte nicht geladen werden.");
+			DasChatLogger.getLogger().log(Level.SEVERE, e.getMessage(), e);
+			DasChatUtil.exit();
 		}
 	}
 

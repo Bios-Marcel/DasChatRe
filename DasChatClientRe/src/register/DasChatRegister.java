@@ -2,7 +2,6 @@ package register;
 
 import java.util.logging.Level;
 
-import controller.LoginController;
 import controller.RegisterController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import logger.DasChatLogger;
+import login.DasChatClient;
 import util.DasChatUtil;
 
 public class DasChatRegister
@@ -29,7 +29,7 @@ public class DasChatRegister
 		try
 		{
 			stage.setTitle("DasChat - Account erstellen");
-			stage.initOwner(LoginController.getStage());
+			stage.initOwner(DasChatClient.mainStage);
 			stage.initModality(Modality.WINDOW_MODAL);
 
 			final Parent root = loader.load();

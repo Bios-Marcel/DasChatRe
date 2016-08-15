@@ -48,7 +48,7 @@
             <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="whitebackground" HBox.hgrow="ALWAYS">
 		    	<children>
 		      		<WebView fx:id="messageBoard" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="SOMETIMES" />
-   		      		<TextArea fx:id="messageTextArea" maxHeight="120.0" maxWidth="1.7976931348623157E308" onKeyPressed="#messageTextAreaKeyListener" wrapText="true" HBox.hgrow="ALWAYS">
+   		      		<TextArea fx:id="messageTextArea" prefHeight="50" maxHeight="120.0" maxWidth="1.7976931348623157E308" onKeyPressed="#messageTextAreaKeyListener" wrapText="true" HBox.hgrow="ALWAYS">
                         <VBox.margin>
                            <Insets bottom="7.0" left="15.0" right="15.0" top="7.0" />
                         </VBox.margin>

@@ -20,15 +20,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 import logger.DasChatLogger;
+import login.DasChatClient;
 import util.DasChatUtil;
 import util.HTMLUtil;
 
 public class ClientController
 {
-	private Stage		clientStage;
-
 	@FXML
 	private WebView		messageBoard;
 
@@ -41,11 +39,6 @@ public class ClientController
 
 	private Thread		listenToServerThread;
 
-	public ClientController(Stage stage)
-	{
-		clientStage = stage;
-	}
-
 	public WebView getMessageBoard()
 	{
 		return messageBoard;
@@ -57,7 +50,9 @@ public class ClientController
 	 */
 	private void updateTextAreaSize()
 	{
-		// HACK(MSC) Dies ist ein Workaround, wenn ein PromptText gesetzt ist
+		messageTextAreaText = (Text) messageTextArea.lookup(".text");
+		// HACK(MSC) Dies ist ein Workaround, wenn ein PromptText gesetzt
+		// ist
 		// kann die TextArea ihre Größe nicht ändern.
 		if (messageTextArea.getText().length() == 0)
 		{
@@ -110,7 +105,7 @@ public class ClientController
 						"<div id='msg' channel='"
 								+ Channel.getActiveChannel().getName()
 								+ "' user='"
-								+ LoginController.getName()
+								+ DasChatClient.getName()
 								+ "'>"
 								+ message
 								+ "</div>";
@@ -130,10 +125,6 @@ public class ClientController
 		// sendButton.setGraphic(buttonImage);
 
 		initMessageBoard();
-
-		messageTextAreaText = (Text) messageTextArea.lookup(".text");
-
-		updateTextAreaSize();
 
 		initChats();
 
@@ -183,7 +174,7 @@ public class ClientController
 						Element msgElement = doc.getElementById("msg");
 						String channelName = msgElement.attr("channel");
 						String sender = msgElement.attr("user");
-						if (sender.equals(LoginController.getName()))
+						if (sender.equals(DasChatClient.getName()))
 						{
 							msgElement.attr("class", "messageblobme");
 						}
@@ -229,7 +220,7 @@ public class ClientController
 				updateTextAreaSize();
 			}
 		});
-		clientStage.getScene().widthProperty().addListener(new ChangeListener<Number>()
+		DasChatClient.mainStage.getScene().widthProperty().addListener(new ChangeListener<Number>()
 		{
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
