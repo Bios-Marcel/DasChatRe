@@ -34,7 +34,7 @@
          <children>
             <VBox maxHeight="1.7976931348623157E308" maxWidth="250.0" minWidth="250.0" styleClass="border-right-only">
                <children>
-                  <TextField />
+                  <TextField text="Suchen" />
                   <ScrollPane hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" minHeight="400.0" VBox.vgrow="ALWAYS">
                      <content>
                         <VBox fx:id="chatList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="chatList" />

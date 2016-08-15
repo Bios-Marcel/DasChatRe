@@ -77,6 +77,7 @@ public class UserThread extends Thread
 		}
 		while (true)
 		{
+			System.out.println("LOOOOP");
 			try
 			{
 				String message = communication.receive();
@@ -169,6 +170,7 @@ public class UserThread extends Thread
 			}
 			catch (IOException e)
 			{
+				e.printStackTrace();
 				try
 				{
 					serverSocket.close();
