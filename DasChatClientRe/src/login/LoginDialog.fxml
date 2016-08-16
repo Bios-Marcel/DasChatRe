@@ -18,7 +18,7 @@
             <Insets top="10.0" />
          </VBox.margin>
       </Label>
-      <TextField fx:id="loginUsername" promptText="Gib deinen Benutzername ein ...">
+      <TextField fx:id="loginUsername" onKeyPressed="#enterPressed" promptText="Gib deinen Benutzername ein ...">
          <VBox.margin>
             <Insets top="1.0" />
          </VBox.margin>
@@ -28,7 +28,7 @@
             <Insets top="5.0" />
          </padding>
       </Label>
-      <PasswordField fx:id="loginPassword" promptText="Gib dein Passwort ein ...">
+      <PasswordField fx:id="loginPassword" onKeyPressed="#enterPressed" promptText="Gib dein Passwort ein ...">
          <VBox.margin>
             <Insets top="1.0" />
          </VBox.margin>
@@ -45,7 +45,7 @@
       <Hyperlink text="Passwort vergessen? Klicke hier um es wiederherzustellen." />
       <ButtonBar>
         <buttons>
-          <Button mnemonicParsing="false" defaultButton="true" onAction="#login" text="Login" />
+          <Button mnemonicParsing="false" onKeyPressed="#enterPressed" onAction="#loginButtonClicked" text="Login" />
             <Button mnemonicParsing="false" onAction="#exitDasChat" text="Schließen" />
         </buttons>
          <VBox.margin>

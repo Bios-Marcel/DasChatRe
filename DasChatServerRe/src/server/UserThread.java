@@ -77,7 +77,6 @@ public class UserThread extends Thread
 		}
 		while (true)
 		{
-			System.out.println("LOOOOP");
 			try
 			{
 				String message = communication.receive();
@@ -125,7 +124,6 @@ public class UserThread extends Thread
 					}
 					else if (DasChatUtil.beginningEquals(message, "<div"))
 					{
-						System.out.println(message);
 						// Nachricht bestteht aus
 						// CHANNELNAME|NACHRICHT(Beinhaltet restliche
 						// Informationen im HTML)

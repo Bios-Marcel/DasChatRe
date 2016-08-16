@@ -10,11 +10,14 @@ import chat.Channel;
 import chat.Message;
 import communication.Communication;
 import components.ChannelPane;
+import components.IconedTextField;
 import constants.Keywords;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
@@ -28,16 +31,24 @@ import util.HTMLUtil;
 public class ClientController
 {
 	@FXML
-	private WebView		messageBoard;
+	private WebView			messageBoard;
 
 	@FXML
-	private TextArea	messageTextArea;
-	private Text		messageTextAreaText;
+	private TextArea		messageTextArea;
+	private Text			messageTextAreaText;
+
+	// @FXML
+	// private ImageView sendButton;
 
 	@FXML
-	private VBox		chatList;
+	private IconedTextField	searchBar;
 
-	private Thread		listenToServerThread;
+	@FXML
+	private VBox			chatList;
+
+	private Thread			listenToServerThread;
+
+	private Thread			initThread;
 
 	public WebView getMessageBoard()
 	{
@@ -119,24 +130,38 @@ public class ClientController
 	 */
 	public void init()
 	{
-		// NOTE(msc) Auskommentiert da der Senden Button entfernt wurde.
-		// ImageView buttonImage = new ImageView(new
-		// Image(this.getClass().getResourceAsStream("/images/sendButton.png")));
-		// sendButton.setGraphic(buttonImage);
-
 		initMessageBoard();
 
 		initChats();
 
 		initListeners();
 
+		searchBar.setImageView(new Image(getClass().getResource("/images/searchsmall.png").toExternalForm()));
+		searchBar.setPromptText("Search");
+
 		listenToServer();
+		initThread = new Thread(() ->
+		{
+			while (true)
+			{
+				if (!Objects.isNull(((Text) messageTextArea.lookup(".text"))))
+				{
+					Platform.runLater(() ->
+					{
+						updateTextAreaSize();
+					});
+					break;
+				}
+			}
+			initThread.interrupt();
+		});
+		initThread.start();
 	}
 
 	private void initMessageBoard()
 	{
 		messageBoard.getEngine()
-				.setUserStyleSheetLocation(getClass().getResource("/chatstyle/" + "default.css").toExternalForm());
+				.setUserStyleSheetLocation(getClass().getResource("/chatstyle/default.css").toExternalForm());
 		String landingPage =
 				"<html><div style='text-align:center; width: 98%; position: absolute; top: 50%; translateY(-50%);'><span style='color: lightgrey; fonz-size: 20px;'>Wähle einen Chat/Chat Partner aus.</span></div></html>";
 		messageBoard.getEngine().loadContent(landingPage);

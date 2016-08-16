@@ -6,6 +6,8 @@ import communication.Communication;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import login.DasChatClient;
 import util.DasChatUtil;
@@ -32,6 +34,20 @@ public class ChooseServerController
 	}
 
 	@FXML
+	private void connectButtonClicked()
+	{
+		connectToServer();
+	}
+
+	@FXML
+	private void enterTyped(KeyEvent e)
+	{
+		if (e.getCode() == KeyCode.ENTER)
+		{
+			connectToServer();
+		}
+	}
+
 	private void connectToServer()
 	{
 		try
@@ -72,7 +88,6 @@ public class ChooseServerController
 			DasChatUtil.showErrorDialog("Fehler beim Verbindungsaufbau", "Kein Port angegeben",
 					"Bitte gib einen Port an.");
 		}
-
 	}
 
 	@FXML

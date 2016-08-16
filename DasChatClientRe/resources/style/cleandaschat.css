@@ -6,7 +6,7 @@
 }
 .border-right-only
 {
-	-fx-border-color: black;
+	-fx-border-color: darkgrey;
 	-fx-border-width: 0 1 0 0 !important;
 }
 
@@ -49,10 +49,12 @@
 .text-area .scroll-pane .viewport
 {
     -fx-background-color: darkgrey;
+    -fx-background-insets: -1;
 }
 .text-area .scroll-pane
 {
     -fx-background-color: darkgrey;
+    -fx-background-insets: -1;
 }
 
 .text-field

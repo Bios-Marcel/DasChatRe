@@ -13,6 +13,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import logger.DasChatLogger;
 import login.DasChatClient;
@@ -43,6 +46,20 @@ public class LoginController
 	}
 
 	@FXML
+	private void loginButtonClicked()
+	{
+		login();
+	}
+
+	@FXML
+	private void enterPressed(KeyEvent e)
+	{
+		if (e.getCode() == KeyCode.ENTER)
+		{
+			login();
+		}
+	}
+
 	private void login()
 	{
 		userName = loginUsername.getText();
@@ -119,6 +136,9 @@ public class LoginController
 			clientStage.setIconified(false);
 			clientStage.setMaximized(false);
 			clientStage.setResizable(true);
+			// TODO(msc) auf Double.MAX_VALUE setzen?
+			clientStage.setMaxHeight(Screen.getPrimary().getBounds().getHeight());
+			clientStage.setMaxWidth(Screen.getPrimary().getBounds().getWidth());
 			clientStage.setMinWidth(760);
 			clientStage.setMinHeight(560);
 			controller.init();
