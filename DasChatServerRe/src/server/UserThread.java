@@ -109,7 +109,7 @@ public class UserThread extends Thread
 							communication.send("login_successful:connectionsalt:" + connectionSalt);
 							for (Channel channel : Channel.getChannels())
 							{
-								if (channel.getUsers().contains(tempAccountName))
+								if (channel.getUsers().contains(tempAccountName) || channel.isPublic())
 								{
 									String channelDataAsString = channel.toString();
 									communication.send("channel:" + channelDataAsString);
@@ -156,7 +156,8 @@ public class UserThread extends Thread
 								if (channel.getName().equals(channelName))
 								{
 									channel.addMessageToQueue(message);
-									if (channel.getUsers().contains(userCommunication.getAccount().getName()))
+									if (channel.getUsers().contains(userCommunication.getAccount().getName())
+											|| channel.isPublic())
 									{
 										userCommunication.send(message);
 									}

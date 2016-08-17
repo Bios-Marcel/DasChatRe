@@ -12,14 +12,16 @@ import communication.Communication;
 import components.ChannelPane;
 import components.IconedTextField;
 import constants.Keywords;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
@@ -45,6 +47,18 @@ public class ClientController
 
 	@FXML
 	private VBox			chatList;
+
+	@FXML
+	private ImageView		sendButton;
+
+	@FXML
+	private BorderPane		buttonContainer;
+
+	@FXML
+	private ImageView		plusButton;
+
+	@FXML
+	private BorderPane		plusContainer;
 
 	private Thread			listenToServerThread;
 
@@ -100,6 +114,12 @@ public class ClientController
 		}
 	}
 
+	@FXML
+	private void sendButtonClicked(MouseEvent e)
+	{
+		sendMessage();
+	}
+
 	/**
 	 * Sendet eine Nachricht an den Server
 	 */
@@ -140,22 +160,9 @@ public class ClientController
 		searchBar.setPromptText("Search");
 
 		listenToServer();
-		initThread = new Thread(() ->
-		{
-			while (true)
-			{
-				if (!Objects.isNull(((Text) messageTextArea.lookup(".text"))))
-				{
-					Platform.runLater(() ->
-					{
-						updateTextAreaSize();
-					});
-					break;
-				}
-			}
-			initThread.interrupt();
-		});
-		initThread.start();
+
+		sendButton.setImage(new Image(getClass().getResource("/images/sendButton.png").toExternalForm()));
+		plusButton.setImage(new Image(getClass().getResource("/images/plus.png").toExternalForm()));
 	}
 
 	private void initMessageBoard()
@@ -241,14 +248,6 @@ public class ClientController
 		{
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-			{
-				updateTextAreaSize();
-			}
-		});
-		DasChatClient.mainStage.getScene().widthProperty().addListener(new ChangeListener<Number>()
-		{
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
 			{
 				updateTextAreaSize();
 			}

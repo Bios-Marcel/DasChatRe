@@ -40,6 +40,8 @@ public class Channel
 	 */
 	private Set<String>		users				= new HashSet<>();
 
+	private boolean			publicChannel;
+
 	private List<String>	messageSaveQueue	= new ArrayList<>();
 
 	private BufferedWriter	bufferedWriter;
@@ -47,6 +49,11 @@ public class Channel
 	public static Set<Channel> getChannels()
 	{
 		return channelSet;
+	}
+
+	public boolean isPublic()
+	{
+		return publicChannel;
 	}
 
 	public String getName()
@@ -139,6 +146,7 @@ public class Channel
 		{
 			admins.addAll(Arrays.asList(tempAdmins));
 		}
+		publicChannel = Boolean.parseBoolean(channelProperties.getProperty("public", "false"));
 	}
 
 	/**

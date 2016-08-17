@@ -103,7 +103,7 @@
     -fx-background-color: white;
 }
 
-.menu-bar
+/*.menu-bar
 {
 	-fx-border-radius: 0;
 	-fx-background-radius: 0;
@@ -111,8 +111,64 @@
 	-fx-effect: null;
 	-fx-border-width: 0;
 	-fx-padding: 0 0 10 0;
+}*/
+.menu-bar
+{
+	-fx-use-system-menu-bar: true;
 }
 .whitebackground
 {
 	-fx-background-color: white;	
+}
+
+.scroll-pane .increment-button
+{
+	-fx-pref-height: 0;
+	-fx-pref-width: 0;
+}
+.scroll-pane .decrement-button
+{
+	-fx-pref-height: 0;
+	-fx-pref-width: 0;
+}
+.scroll-pane .increment-button .increment-arrow
+{
+	-fx-pref-height: 0;
+	-fx-pref-width: 0;
+}
+.scroll-pane .decrement-button .decrement-arrow
+{
+	-fx-pref-height: 0;
+	-fx-pref-width: 0;
+}
+
+.scroll-bar .track-background
+{
+	-fx-effect: null;
+	-fx-background-color: white;
+}
+.scroll-bar .track
+{
+	-fx-effect: null;
+	-fx-background-color: white;
+}
+.scroll-bar .thumb
+{
+	-fx-effect: null;
+	-fx-background-color: darkgrey;
+	-fx-background-radius: 0;
+	-fx-border-radius: 0;
+	
+}
+.sendButton
+{
+	-fx-border-insets: -1 -1 -1 -1;
+	-fx-border-width: 2 2 2 0;
+	-fx-border-color: darkgrey;
+}
+.plusButton
+{
+	-fx-border-insets: -1 -1 -1 -1;
+	-fx-border-width: 2 0 2 2;
+	-fx-border-color: darkgrey;
 }

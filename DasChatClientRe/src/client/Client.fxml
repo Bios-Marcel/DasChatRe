@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -9,12 +8,12 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 <?import components.IconedTextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Pane?>
 
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -38,7 +37,7 @@
          <children>
             <VBox maxHeight="1.7976931348623157E308" maxWidth="250.0" minWidth="250.0" styleClass="border-right-only">
                <children>
-                  <IconedTextField fx:id="searchBar"/>
+                  <IconedTextField fx:id="searchBar" />
                   <ScrollPane hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" minHeight="400.0" VBox.vgrow="ALWAYS">
                      <content>
                         <VBox fx:id="chatList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="chatList" />
@@ -52,11 +51,30 @@
             <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="whitebackground" HBox.hgrow="ALWAYS">
 		    	<children>
 		      		<WebView fx:id="messageBoard" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="SOMETIMES" />
-   		      		<TextArea fx:id="messageTextArea" prefHeight="50" maxHeight="120.0" maxWidth="1.7976931348623157E308" onKeyPressed="#messageTextAreaKeyListener" wrapText="true" HBox.hgrow="ALWAYS">
-                        <VBox.margin>
-                           <Insets bottom="7.0" left="15.0" right="15.0" top="7.0" />
-                        </VBox.margin>
-                    </TextArea>
+                  <HBox HBox.hgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="7.0" left="15.0" right="15.0" top="7.0" />
+                     </VBox.margin>
+                     <children>
+                        <BorderPane fx:id="plusContainer" styleClass="plusButton">
+                           <center>
+                              <ImageView fx:id="plusButton" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                           </center>
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </BorderPane>
+         		      		<TextArea fx:id="messageTextArea" maxHeight="120.0" maxWidth="1.7976931348623157E308" onKeyPressed="#messageTextAreaKeyListener" prefHeight="50" wrapText="true" HBox.hgrow="ALWAYS" />
+                        <BorderPane fx:id="buttonContainer" styleClass="sendButton">
+                           <center>
+                              <ImageView fx:id="sendButton" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#sendButtonClicked" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                           </center>
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </BorderPane>
+                     </children>
+                  </HBox>
                 </children>
 			</VBox>
          </children>
