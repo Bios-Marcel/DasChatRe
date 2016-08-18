@@ -6,94 +6,83 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jsoup.nodes.Element;
+
 import components.ChannelPane;
 import javafx.application.Platform;
 import javafx.scene.web.WebView;
 import login.DasChatClient;
 
-public class Channel
-{
+public class Channel {
 	/**
 	 * Set welches die Channel Objekte beinhaltet, da jeder Channel nur einmal
 	 * existieren kann wurde ein Set genutzt.
 	 */
-	static Set<Channel>		channelSet	= new HashSet<>();
+	static Set<Channel> channelSet = new HashSet<>();
 
 	/**
 	 * Name des Channels.
 	 */
-	private String			name;
+	private String name;
 
 	/**
 	 * Liste aller Nutzer des jeweiligen Channels.
 	 */
-	private Set<String>		users		= new HashSet<>();
+	private Set<String> users = new HashSet<>();
 
-	private boolean			admin		= false;
+	private boolean admin = false;
 
-	private ChannelPane		channelPane;
+	private ChannelPane channelPane;
 
-	private List<String>	messages	= new ArrayList<>();
+	private List<String> messages = new ArrayList<>();
 
-	private static Channel	activeChannel;
+	private static Channel activeChannel;
 
-	public static Channel getActiveChannel()
-	{
+	public static Channel getActiveChannel() {
 		return activeChannel;
 	}
 
-	public static void setActiveChannel(Channel channel)
-	{
+	public static void setActiveChannel(Channel channel) {
 		activeChannel = channel;
 	}
 
-	public void setChannelPane(ChannelPane channelPane)
-	{
+	public void setChannelPane(ChannelPane channelPane) {
 		this.channelPane = channelPane;
 	}
 
-	public ChannelPane getChannelPane()
-	{
+	public ChannelPane getChannelPane() {
 		return channelPane;
 	}
 
-	public static Set<Channel> getChannels()
-	{
+	public static Set<Channel> getChannels() {
 		return channelSet;
 	}
 
-	public void addMessage(String message)
-	{
+	public void addMessage(String message) {
 		messages.add(message);
 	}
 
-	public List<String> getMessages()
-	{
+	public List<String> getMessages() {
 		return messages;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	private void setName(String name)
-	{
+	private void setName(String name) {
 		this.name = name;
 	}
 
-	public Set<String> getUsers()
-	{
+	public Set<String> getUsers() {
 		return users;
 	}
 
-	public boolean isAdmin()
-	{
+	public boolean isAdmin() {
 		return admin;
 	}
 
-	private void setAdmin(boolean admin)
-	{
+	private void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
 
@@ -103,26 +92,21 @@ public class Channel
 	 * @param channelProperties
 	 *            Properties des Channel
 	 */
-	public Channel(String channelDataAsString)
-	{
-		String[] rawData = channelDataAsString.split("[|]");
+	public Channel(Element channelElement) {
 
-		setName(rawData[0]);
-		List<String> admins = Arrays.asList(rawData[1].split("[,]"));
-		users.addAll(Arrays.asList(rawData[2].split("[,]")));
+		setName(channelElement.attr("name"));
+		List<String> admins = Arrays.asList(channelElement.attr("admins").split("[,]"));
+		users.addAll(Arrays.asList(channelElement.attr("users").split("[,]")));
 		setAdmin(admins.contains(DasChatClient.getName()));
 	}
 
-	public static void loadMessagesForActiveChannel(WebView webView)
-	{
+	public static void loadMessagesForActiveChannel(WebView webView) {
 		String content = "";
-		for (String message : Channel.getActiveChannel().getMessages())
-		{
+		for (String message : Channel.getActiveChannel().getMessages()) {
 			content = content + message;
 		}
 		String finalContent = content;
-		Platform.runLater(() ->
-		{
+		Platform.runLater(() -> {
 			webView.getEngine()
 					.loadContent("<html><head><meta charset='UTF-8'></head><body>" + finalContent + "</body></html>");
 		});
@@ -134,8 +118,7 @@ public class Channel
 	 * @param channelToAdd
 	 *            hinzuzufügender Channel
 	 */
-	public static void addChannel(Channel channelToAdd)
-	{
+	public static void addChannel(Channel channelToAdd) {
 		channelSet.add(channelToAdd);
 	}
 
@@ -145,8 +128,7 @@ public class Channel
 	 * @param channelToAdd
 	 *            zu entfernender Channel
 	 */
-	public static void removeChannel(Channel channelToRemove)
-	{
+	public static void removeChannel(Channel channelToRemove) {
 		channelSet.remove(channelToRemove);
 	}
 }

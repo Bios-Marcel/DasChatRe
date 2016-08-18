@@ -30,42 +30,40 @@ import login.DasChatClient;
 import util.DasChatUtil;
 import util.HTMLUtil;
 
-public class ClientController
-{
+public class ClientController {
 	@FXML
-	private WebView			messageBoard;
+	private WebView messageBoard;
 
 	@FXML
-	private TextArea		messageTextArea;
-	private Text			messageTextAreaText;
+	private TextArea messageTextArea;
+	private Text messageTextAreaText;
 
 	// @FXML
 	// private ImageView sendButton;
 
 	@FXML
-	private IconedTextField	searchBar;
+	private IconedTextField searchBar;
 
 	@FXML
-	private VBox			chatList;
+	private VBox chatList;
 
 	@FXML
-	private ImageView		sendButton;
+	private ImageView sendButton;
 
 	@FXML
-	private BorderPane		buttonContainer;
+	private BorderPane buttonContainer;
 
 	@FXML
-	private ImageView		plusButton;
+	private ImageView plusButton;
 
 	@FXML
-	private BorderPane		plusContainer;
+	private BorderPane plusContainer;
 
-	private Thread			listenToServerThread;
+	private Thread listenToServerThread;
 
-	private Thread			initThread;
+	private Thread initThread;
 
-	public WebView getMessageBoard()
-	{
+	public WebView getMessageBoard() {
 		return messageBoard;
 	}
 
@@ -73,18 +71,14 @@ public class ClientController
 	 * Setzt die {@link #messageTextArea TextArea zum Nachrichten schreiben} auf
 	 * die richtige Größe
 	 */
-	private void updateTextAreaSize()
-	{
+	private void updateTextAreaSize() {
 		messageTextAreaText = (Text) messageTextArea.lookup(".text");
 		// HACK(MSC) Dies ist ein Workaround, wenn ein PromptText gesetzt
 		// ist
 		// kann die TextArea ihre Größe nicht ändern.
-		if (messageTextArea.getText().length() == 0)
-		{
+		if (messageTextArea.getText().length() == 0) {
 			messageTextArea.setPromptText("Gib eine Nachricht ein ...");
-		}
-		else
-		{
+		} else {
 			messageTextArea.setPromptText(null);
 		}
 		messageTextArea.setPrefHeight(messageTextAreaText.boundsInParentProperty().get().getMaxY() + 30.0);
@@ -98,16 +92,11 @@ public class ClientController
 	 *            vom FXML übergebenes KeyEvent
 	 */
 	@FXML
-	private void messageTextAreaKeyListener(KeyEvent e)
-	{
-		if (e.getCode() == KeyCode.ENTER)
-		{
-			if (e.isShiftDown())
-			{
+	private void messageTextAreaKeyListener(KeyEvent e) {
+		if (e.getCode() == KeyCode.ENTER) {
+			if (e.isShiftDown()) {
 				messageTextArea.insertText(messageTextArea.getCaretPosition(), System.lineSeparator());
-			}
-			else
-			{
+			} else {
 				e.consume();
 				sendMessage();
 			}
@@ -115,32 +104,23 @@ public class ClientController
 	}
 
 	@FXML
-	private void sendButtonClicked(MouseEvent e)
-	{
+	private void sendButtonClicked(MouseEvent e) {
 		sendMessage();
 	}
 
 	/**
 	 * Sendet eine Nachricht an den Server
 	 */
-	private void sendMessage()
-	{
-		if (!Objects.isNull(Channel.getActiveChannel()))
-		{
+	private void sendMessage() {
+		if (!Objects.isNull(Channel.getActiveChannel())) {
 			String message = messageTextArea.getText();
-			if (Message.isNonEmpty(message))
-			{
+			if (Message.isNonEmpty(message)) {
 				messageTextArea.clear();
 				message = HTMLUtil.escapeHTML(message);
-				message =
-						"<div id='msg' channel='"
-								+ Channel.getActiveChannel().getName()
-								+ "' user='"
-								+ DasChatClient.getName()
-								+ "'>"
-								+ message
-								+ "</div>";
+				message = "<div id='msg' channel='" + Channel.getActiveChannel().getName() + "' user='"
+						+ DasChatClient.getName() + "'>" + message + "</div>";
 				Communication.send(message);
+				updateTextAreaSize();
 			}
 		}
 	}
@@ -148,8 +128,7 @@ public class ClientController
 	/**
 	 * Initialisiert alle nötigen Dinge für den Client
 	 */
-	public void init()
-	{
+	public void init() {
 		initMessageBoard();
 
 		initChats();
@@ -165,68 +144,51 @@ public class ClientController
 		plusButton.setImage(new Image(getClass().getResource("/images/plus.png").toExternalForm()));
 	}
 
-	private void initMessageBoard()
-	{
+	private void initMessageBoard() {
 		messageBoard.getEngine()
 				.setUserStyleSheetLocation(getClass().getResource("/chatstyle/default.css").toExternalForm());
-		String landingPage =
-				"<html><div style='text-align:center; width: 98%; position: absolute; top: 50%; translateY(-50%);'><span style='color: lightgrey; fonz-size: 20px;'>Wähle einen Chat/Chat Partner aus.</span></div></html>";
+		String landingPage = "<html><div style='text-align:center; width: 98%; position: absolute; top: 50%; translateY(-50%);'><span style='color: lightgrey; fonz-size: 20px;'>Wähle einen Chat/Chat Partner aus.</span></div></html>";
 		messageBoard.getEngine().loadContent(landingPage);
 	}
 
-	private void initChats()
-	{
-		for (Channel channel : Channel.getChannels())
-		{
+	private void initChats() {
+		for (Channel channel : Channel.getChannels()) {
 			ChannelPane channelPane = new ChannelPane(channel.getName());
 			channel.setChannelPane(channelPane);
 			chatList.getChildren().add(channelPane);
 		}
 	}
 
-	private void listenToServer()
-	{
-		Runnable listening = new Runnable()
-		{
+	private void listenToServer() {
+		Runnable listening = new Runnable() {
 			@Override
-			public void run()
-			{
-				while (true)
-				{
+			public void run() {
+				while (true) {
 					String serverMessage = Communication.receive();
-					if (serverMessage.equals(Keywords.ERROR_WHILE_RECEIVING_MESSAGE))
-					{
+					if (serverMessage.equals(Keywords.ERROR_WHILE_RECEIVING_MESSAGE)) {
 						DasChatLogger.getLogger().severe("Die Verbindung mit dem Server wurde unterbrochen.");
-					}
-					else if (DasChatUtil.beginningEquals(serverMessage, "<div"))
-					{
+					} else if (DasChatUtil.beginningEquals(serverMessage, "<div")) {
 						final String message = serverMessage;
 						System.out.println(message);
 						Document doc = Jsoup.parse(message);
 						Element msgElement = doc.getElementById("msg");
 						String channelName = msgElement.attr("channel");
 						String sender = msgElement.attr("user");
-						if (sender.equals(DasChatClient.getName()))
-						{
+						if (sender.equals(DasChatClient.getName())) {
 							msgElement.attr("class", "messageblobme");
-						}
-						else
-						{
+						} else {
 							msgElement.attr("class", "messageblob");
 						}
 						String finalMessage = doc.getElementById("msg").toString();
 						// Nachricht bestteht aus
 						// CHANNELNAME|NACHRICHT(Beinhaltet restliche
 						// Informationen im HTML)
-						for (Channel channel : Channel.getChannels())
-						{
-							if (channel.getName().equals(channelName))
-							{
+						for (Channel channel : Channel.getChannels()) {
+							if (channel.getName().equals(channelName)) {
 								channel.addMessage(finalMessage);
 							}
 						}
-						if (Channel.getActiveChannel().getName().equals(channelName))
-						{
+						if (Channel.getActiveChannel().getName().equals(channelName)) {
 							Channel.loadMessagesForActiveChannel(messageBoard);
 						}
 					}
@@ -242,13 +204,10 @@ public class ClientController
 	/**
 	 * Initialisiert die nötigen Listener für den Client.
 	 */
-	private void initListeners()
-	{
-		messageTextArea.textProperty().addListener(new ChangeListener<String>()
-		{
+	private void initListeners() {
+		messageTextArea.textProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue)
-			{
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				updateTextAreaSize();
 			}
 		});

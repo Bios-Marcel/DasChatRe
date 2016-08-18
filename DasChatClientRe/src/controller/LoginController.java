@@ -2,6 +2,10 @@ package controller;
 
 import java.util.logging.Level;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 import chat.Channel;
 import communication.Communication;
 import constants.Keywords;
@@ -22,89 +26,75 @@ import login.DasChatClient;
 import register.DasChatRegister;
 import util.DasChatUtil;
 
-public class LoginController
-{
-	private String			userName;
+public class LoginController {
+	private String userName;
 
 	// FXML Variables
 	@FXML
-	private TextField		loginUsername;
+	private TextField loginUsername;
 
 	@FXML
-	private PasswordField	loginPassword;
+	private PasswordField loginPassword;
 
 	@FXML
-	private CheckBox		autoLoginCheckBox;
+	private CheckBox autoLoginCheckBox;
 
 	@SuppressWarnings("unused")
-	private String			connectionSalt;
+	private String connectionSalt;
 
 	@FXML
-	private void register()
-	{
+	private void register() {
 		new DasChatRegister();
 	}
 
 	@FXML
-	private void loginButtonClicked()
-	{
+	private void loginButtonClicked() {
 		login();
 	}
 
 	@FXML
-	private void enterPressed(KeyEvent e)
-	{
-		if (e.getCode() == KeyCode.ENTER)
-		{
+	private void enterPressed(KeyEvent e) {
+		if (e.getCode() == KeyCode.ENTER) {
 			login();
 		}
 	}
 
-	private void login()
-	{
+	private void login() {
 		userName = loginUsername.getText();
-		String password =
-				String.format("%064x", new java.math.BigInteger(1,
-						DasChatUtil.hashPassword(Keywords.EMPTY_STRING, loginPassword.getText(), 50000)));
+		String password = String.format("%064x", new java.math.BigInteger(1,
+				DasChatUtil.hashPassword(Keywords.EMPTY_STRING, loginPassword.getText(), 50000)));
 		Communication.send("login:" + userName + "password:" + password);
 		DasChatClient.setName(userName);
 		String reply = Communication.receive();
-		if (DasChatUtil.beginningEquals(reply, "login_successful:"))
-		{
+		if (DasChatUtil.beginningEquals(reply, "login_successful:")) {
 			// if(autoLoginCheckBox.isSelected()) {
 			// //TODO: Gehashes Passwort(password) und
 			// Benutzername(userName) in Konfig speichern
 			// }
 			connectionSalt = reply.replace("login_successful:connectionsalt:", "");
-			while (true)
-			{
+			while (true) {
 				reply = Communication.receive();
-				if (reply.equals("nomorechannels"))
-				{
+				if (reply.equals("nomorechannels")) {
 					break;
 				}
-				if (DasChatUtil.beginningEquals(reply, "channel:"))
-				{
-					reply = reply.replace("channel:", "");
-					Channel.addChannel(new Channel(reply));
-				}
-				else
-				{
+
+				if (DasChatUtil.beginningEquals(reply, "<data")) {
+					Document channelDocument = Jsoup.parse(reply);
+					Element channelElement = channelDocument.getElementById("channel");
+					System.out.println(channelElement);
+					Channel.addChannel(new Channel(channelElement));
+				} else {
 					DasChatLogger.getLogger().log(Level.SEVERE, "Channel konnten nicht empfangen werden.");
 				}
 			}
 			// DasChatClient.getController().init();
 			loadClientScene();
-		}
-		else if (reply.equals("login_failed"))
-		{
+		} else if (reply.equals("login_failed")) {
 			loginUsername.getStyleClass().add("textFieldError");
 			loginPassword.getStyleClass().add("textFieldError");
 			DasChatUtil.showErrorDialog("DasChat - Login", "Fehler bei der Anmeldung",
 					"Dein Benutzername oder dein Passwort sind falsch.");
-		}
-		else
-		{
+		} else {
 			loginUsername.getStyleClass().remove("textFieldError");
 			loginPassword.getStyleClass().remove("textFieldError");
 			DasChatUtil.showErrorDialog("DasChat - Login", "Fehler bei der Anmeldung",
@@ -112,19 +102,16 @@ public class LoginController
 		}
 	}
 
-	private void loadClientScene()
-	{
+	private void loadClientScene() {
 		DasChatClient.loader = new FXMLLoader();
 		DasChatClient.loader.setLocation(getClass().getResource("/client/Client.fxml"));
 		Stage clientStage = DasChatClient.mainStage;
 		ClientController controller = new ClientController();
 		DasChatClient.loader.setController(controller);
-		try
-		{
+		try {
 			final Parent root = DasChatClient.loader.load();
 			DasChatClient.scene = new Scene(root);
-			clientStage.setOnCloseRequest(close ->
-			{
+			clientStage.setOnCloseRequest(close -> {
 				Runtime.getRuntime().exit(0);
 			});
 			clientStage.setScene(DasChatClient.scene);
@@ -142,9 +129,7 @@ public class LoginController
 			clientStage.setMinWidth(760);
 			clientStage.setMinHeight(560);
 			controller.init();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			DasChatLogger.getLogger().info("DasChat konnte nicht geladen werden.");
 			DasChatLogger.getLogger().log(Level.SEVERE, e.getMessage(), e);
 			DasChatUtil.exit();
@@ -152,8 +137,7 @@ public class LoginController
 	}
 
 	@FXML
-	private void exitDasChat()
-	{
+	private void exitDasChat() {
 		DasChatUtil.exit();
 	}
 }

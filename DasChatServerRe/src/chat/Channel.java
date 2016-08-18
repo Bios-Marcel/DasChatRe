@@ -18,52 +18,61 @@ import java.util.logging.Level;
 import constants.Paths;
 import logger.DasChatLogger;
 
-public class Channel
-{
+public class Channel {
 	/**
 	 * Set welches die Channel Objekte beinhaltet, da jeder Channel nur einmal
 	 * existieren kann wurde ein Set genutzt.
 	 */
-	static Set<Channel>		channelSet			= new HashSet<>();
+	static Set<Channel> channelSet = new HashSet<>();
 
 	/**
 	 * Name des Channels.
 	 */
-	private String			name;
+	private String name;
 
 	/**
-	 * Liste aller Nutzer mit Admin Rechten für den jeweiligen Channel.
+	 * Set aller für den Channel zugelassen Administratoren
 	 */
-	private Set<String>		admins				= new HashSet<>();
+	private Set<String> admins = new HashSet<>();
 	/**
-	 * Liste aller Nutzer des jeweiligen Channels.
+	 * Set welches alle für den Channel zugelassen Nutzer enthält, nicht
+	 * relevant fals Channel public ist
 	 */
-	private Set<String>		users				= new HashSet<>();
+	private Set<String> users = new HashSet<>();
 
-	private boolean			publicChannel;
+	private boolean publicChannel;
 
-	private List<String>	messageSaveQueue	= new ArrayList<>();
+	private List<String> messageSaveQueue = new ArrayList<>();
 
-	private BufferedWriter	bufferedWriter;
+	private BufferedWriter bufferedWriter;
 
-	public static Set<Channel> getChannels()
-	{
+	public static Set<Channel> getChannels() {
 		return channelSet;
 	}
 
-	public boolean isPublic()
-	{
+	/**
+	 * @return @link {@link #publicChannel}
+	 */
+	public boolean isPublic() {
 		return publicChannel;
 	}
 
-	public String getName()
-	{
+	/**
+	 * @return @link {@link #name}
+	 */
+	public String getName() {
 		return name;
 	}
 
-	public Set<String> getUsers()
-	{
+	/**
+	 * @return {@link #users}
+	 */
+	public Set<String> getUsers() {
 		return users;
+	}
+
+	public Set<String> getAdmins() {
+		return admins;
 	}
 
 	/**
@@ -71,16 +80,13 @@ public class Channel
 	 * zurück.
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		String channelDataAsString = name + "|";
-		for (String admin : admins)
-		{
+		for (String admin : admins) {
 			channelDataAsString = channelDataAsString + "," + admin;
 		}
 		channelDataAsString = channelDataAsString + "|";
-		for (String user : users)
-		{
+		for (String user : users) {
 			channelDataAsString = channelDataAsString + "," + user;
 		}
 		channelDataAsString = channelDataAsString.replace("|,", "|");
@@ -93,8 +99,7 @@ public class Channel
 	 * @param channelProperties
 	 *            Properties des Channel
 	 */
-	public Channel(File parentDirectory, Properties channelProperties)
-	{
+	public Channel(File parentDirectory, Properties channelProperties) {
 		name = parentDirectory.getName();
 
 		loadChannelData(channelProperties);
@@ -102,48 +107,32 @@ public class Channel
 		initializeMessageQueueWriter();
 	}
 
-	private void initializeMessageQueueWriter()
-	{
+	private void initializeMessageQueueWriter() {
 		File chatFile = new File(Paths.CHATS_LOCATION + getName() + File.separator + "messages.data");
 		System.out.println(chatFile.getAbsolutePath());
-		if (!chatFile.exists())
-		{
-			try
-			{
+		if (!chatFile.exists()) {
+			try {
 				chatFile.createNewFile();
-			}
-			catch (IOException e)
-			{
-				DasChatLogger.getLogger().log(Level.SEVERE,
-						"Chat File '"
-								+ chatFile.getName()
-								+ "' existiert nicht und konnte nicht erstellt werden. ("
-								+ e.getMessage()
-								+ ")");
+			} catch (IOException e) {
+				DasChatLogger.getLogger().log(Level.SEVERE, "Chat File '" + chatFile.getName()
+						+ "' existiert nicht und konnte nicht erstellt werden. (" + e.getMessage() + ")");
 			}
 		}
-		try
-		{
-			bufferedWriter =
-					new BufferedWriter(
-							new OutputStreamWriter(new FileOutputStream(chatFile, true), StandardCharsets.UTF_8));
-		}
-		catch (FileNotFoundException e)
-		{
+		try {
+			bufferedWriter = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(chatFile, true), StandardCharsets.UTF_8));
+		} catch (FileNotFoundException e) {
 			DasChatLogger.getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
-	private void loadChannelData(Properties channelProperties)
-	{
+	private void loadChannelData(Properties channelProperties) {
 		String[] tempUsers = channelProperties.getProperty("users", "").split("[,]");
-		if (tempUsers.length != 0)
-		{
+		if (tempUsers.length != 0) {
 			users.addAll(Arrays.asList(tempUsers));
 		}
 		String[] tempAdmins = channelProperties.getProperty("admins", "").split("[,]");
-		if (tempAdmins.length != 0)
-		{
+		if (tempAdmins.length != 0) {
 			admins.addAll(Arrays.asList(tempAdmins));
 		}
 		publicChannel = Boolean.parseBoolean(channelProperties.getProperty("public", "false"));
@@ -155,8 +144,7 @@ public class Channel
 	 * @param message
 	 *            zu speichernde Nachricht
 	 */
-	public void addMessageToQueue(String message)
-	{
+	public void addMessageToQueue(String message) {
 		messageSaveQueue.add(message);
 		saveMessagesIfNeccessary();
 	}
@@ -165,30 +153,21 @@ public class Channel
 	 * Sobald 20 oder mehr Nachrichten in der Queue sind werden diese
 	 * abgespeichert.
 	 */
-	private void saveMessagesIfNeccessary()
-	{
-		if (messageSaveQueue.size() >= 20)
-		{
-			for (String message : messageSaveQueue)
-			{
-				try
-				{
+	private void saveMessagesIfNeccessary() {
+		if (messageSaveQueue.size() >= 20) {
+			for (String message : messageSaveQueue) {
+				try {
 					bufferedWriter.newLine();
 					bufferedWriter.write(message);
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 					DasChatLogger.getLogger().log(Level.SEVERE,
 							"Nachricht konnte nicht gespeichert werden: " + message);
 				}
 			}
-			try
-			{
+			try {
 				bufferedWriter.flush();
 				messageSaveQueue.clear();
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				DasChatLogger.getLogger().log(Level.SEVERE, "Nachrichten konnten nicht gespeichert werden.");
 			}
 		}
@@ -200,8 +179,7 @@ public class Channel
 	 * @param channelToAdd
 	 *            hinzuzufügender Channel
 	 */
-	public static void addChannel(Channel channelToAdd)
-	{
+	public static void addChannel(Channel channelToAdd) {
 		channelSet.add(channelToAdd);
 	}
 
@@ -211,8 +189,7 @@ public class Channel
 	 * @param channelToAdd
 	 *            zu entfernender Channel
 	 */
-	public static void removeChannel(Channel channelToRemove)
-	{
+	public static void removeChannel(Channel channelToRemove) {
 		channelSet.remove(channelToRemove);
 	}
 }
