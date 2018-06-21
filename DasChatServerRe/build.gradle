@@ -1,0 +1,25 @@
+apply plugin: 'application'
+
+mainClassName = "server.DasChatServerMain"
+
+buildscript {
+	dependencies {
+		classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+	}
+	repositories {
+		jcenter()
+	}
+}
+
+repositories {
+		jcenter()
+}
+
+dependencies {		
+        compile 'org.jsoup:jsoup:1.11.3'
+
+		compile project(':DasChatShared')
+		compile project(':DasChatUtil')
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'

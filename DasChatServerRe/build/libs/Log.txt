@@ -1,0 +1,7 @@
+[22:59:58 21.06.18] DasChatServer wurde gestartet
+[22:59:58 21.06.18] Konfiguration konnte nicht geladen werden.
+[22:59:58 21.06.18] Port wurde auf 55001 gesetzt.
+[23:00:20 21.06.18] Listening to Socket: /127.0.0.1
+[23:00:39 21.06.18] Listening to Socket: /127.0.0.1
+[23:03:18 21.06.18] Listening to Socket: /127.0.0.1
+[23:03:52 21.06.18] Listening to Socket: /127.0.0.1

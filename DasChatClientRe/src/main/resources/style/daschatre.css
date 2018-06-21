@@ -1,0 +1,146 @@
+*
+{
+	def-color: #EE0060;
+	def-hover-color: #F52C7D;
+	def-pressed-color: #FF7FB3;
+	def-focused-color: blue;
+}
+
+.window-Background
+{
+	-fx-background-color: #7FFEB2;
+}
+
+
+.label
+{
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
+
+.button
+{
+    -fx-background-radius: 0;
+    -fx-background-color: def-color;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
+.button:hover
+{
+	-fx-background-color: def-hover-color !important;
+}
+.button:pressed
+{
+	-fx-background-color: def-pressed-color !important;
+}
+.button:focused
+{
+	-fx-background-color: def-focused-color;
+}
+
+.combo-box
+{
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+.combo-box:focused
+{
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+.combo-box .text-field
+{
+    -fx-background-radius: 0;
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+}
+.combo-box .text-field:focused
+{
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+.combo-box .arrow-button
+{
+    -fx-background-radius: 0;
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+
+.list-view
+{
+    -fx-background-color: #EE0060;
+}
+
+.text-field
+{
+    -fx-background-radius: 0;
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+}
+.text-field:focused
+{
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+	-fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+
+
+.check-box
+{
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
+.check-box .box
+{
+	-fx-background-radius: 0;
+    -fx-background-color: #EE0060;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-effect: null;
+	-fx-border-width: 0;
+}
+.check-box:selected .mark {
+   -fx-mark-color: black;
+}
+
+.hyperlink
+{
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
